@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <title></title>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+
+  <script>
+    import Vue from 'vue';
+    import Vuex from 'vuex';
+    import Vuetify from 'vuetify';
+    import Notifications from 'vue-notification';
+    import velocity from 'velocity-animate';
+
+    import Main from './components/main.vue';
+
+    Vue.use(Vuetify);
+    Vue.use(Notifications, { velocity });
+    Vue.use(Vuex);
+
+    const store = new Vuex.Store({
+        debug: true,
+        state: {
+          
+        },
+        mutations: {
+          
+        }
+
+    });
+
+
+    const app = new Vue({
+                    el: '#app',
+                    render: h => h(Main),
+                    store
+                });
+
+
+  </script>
+</html>
