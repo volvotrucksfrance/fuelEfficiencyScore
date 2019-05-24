@@ -8,6 +8,9 @@
 <script>
 
 import FuelEfficiencyScore from '../class/FuelEfficiencyScore.js';
+import FetchData from '../class/FetchData.js';
+
+import defaultConfig from '../config/defaultConfig.js';
 
 export default {
     created() {
@@ -19,9 +22,12 @@ export default {
 
         init() {
 
-            var myScore = new FuelEfficiencyScore();
+            const tmpData = new FetchData();
+            
+            var data = tmpData.getData();
+
+            const myScore = new FuelEfficiencyScore(data, defaultConfig);
             myScore.getScore();
-            //console.log(myScore.transformData());
         }
     }
 };
