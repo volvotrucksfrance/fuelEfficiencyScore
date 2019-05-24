@@ -1,7 +1,7 @@
 module.exports = {
     anticipation_and_braking: {
         group_weight: 45,
-        coasting: 80,
+        coasting: 60,
         braking: 40
     },
     engine_and_gear_utilisation: {
