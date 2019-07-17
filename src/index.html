@@ -17,7 +17,9 @@
     import Notifications from 'vue-notification';
     import velocity from 'velocity-animate';
 
-    import Main from './components/main.vue';
+    import defaultConfig from './config/defaultConfig.js';
+
+    import EntryPoint from './components/EntryPoint.vue';
 
     Vue.use(Vuetify);
     Vue.use(Notifications, { velocity });
@@ -26,21 +28,46 @@
     const store = new Vuex.Store({
         debug: true,
         state: {
-          
+          dialog: null,
+          config: JSON.parse(localStorage.getItem('config')) || 
+            defaultConfig
         },
         mutations: {
-          
+          setDialog(state, bool) {
+
+            state.dialog = bool;
+          },
+          setConfig(state, conf) {
+            
+            state.config = conf;
+          },
+          defaultConfig(state) {
+
+            localStorage.setItem('config', JSON.stringify(state.config));
+            state.config = defaultConfig;
+          },
+          setLogin(state, login) {
+
+            state.login = login;
+          }
+        },
+        getters: {
+          getConfig(state) {
+
+            return state.config;
+          },
+          getLogin(state) {
+
+            return state.login;
+          }
         }
 
     });
 
-
-    const app = new Vue({
-                    el: '#app',
-                    render: h => h(Main),
-                    store
-                });
-
-
-  </script>
+    new Vue({
+        el: '#app',
+        store,
+        render: h => h(EntryPoint)
+    });
+</script>
 </html>

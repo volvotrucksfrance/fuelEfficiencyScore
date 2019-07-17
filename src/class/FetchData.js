@@ -2,8 +2,9 @@ import data from '../data/fake_data.js';
 
 export default class FetchData {
 
-    constructor() {
+    constructor(listTrucks) {
 
+        this.listTrucks = listTrucks;
     }
 
     getData() {

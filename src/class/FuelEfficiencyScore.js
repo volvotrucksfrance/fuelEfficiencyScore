@@ -60,6 +60,6 @@ export default class FuelEfficiencyScore {
         sum += ((this.defaultConfig.stand_still.idling*fes_score.idling))
           *this.defaultConfig.stand_still.group_weight;
 
-        console.log(Math.trunc(sum/10000));
+        console.log(Math.round(sum/10000));
     }
 }
