@@ -43,7 +43,7 @@
           },
           defaultConfig(state) {
 
-            localStorage.setItem('config', JSON.stringify(state.config));
+            localStorage.setItem('config', JSON.stringify(defaultConfig));
             state.config = defaultConfig;
           },
           setLogin(state, login) {

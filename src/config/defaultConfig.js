@@ -8,7 +8,7 @@ module.exports = {
         group_weight: 35,
         i_shift_auto: 15,
         i_shift_manuel: 0.7,
-        i_shift_power: 22.85,
+        i_shift_power: 22.9,
         top_gear: 0.7,
         withing_eco: 10,
         out_eco: 25,

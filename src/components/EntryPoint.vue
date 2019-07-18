@@ -136,7 +136,7 @@
         <!-- SHOW SCORE -->
         <transition name="fade">
         <div v-if="showScores">
-            <v-toolbar fixed flat color="white">
+            <v-toolbar fixed flat color="white" app>
             <v-btn icon color="dark" @click="goToListDrivers">
               <v-icon>arrow_back</v-icon>
             </v-btn>
@@ -163,7 +163,7 @@
                 </v-dialog>
             </v-toolbar-items>
           </v-toolbar>
-           <v-card>
+           <v-container>
                 <v-card-title>
                 <v-spacer></v-spacer>
                 </v-card-title>
@@ -187,7 +187,7 @@
                     </v-alert>
                 </template>
                 </v-data-table>
-            </v-card>
+            </v-container>
         </div>
         </transition>
         <!-- END SHOW SCORE -->
