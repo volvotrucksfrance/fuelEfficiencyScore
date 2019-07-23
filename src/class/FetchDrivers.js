@@ -72,9 +72,9 @@ export default class FetchDrivers {
         while(dateDebut.addDays(14) < dateFin) {
 
 
-            let tmpDebut = dateDebut;//.toISOString();
+            let tmpDebut = dateDebut;
             dateDebut = dateDebut.addDays(14);
-            let tmpFin = dateDebut;//.toISOString();
+            let tmpFin = dateDebut;
 
             listDate.push({
                 debut: tmpDebut.toISOString(),
