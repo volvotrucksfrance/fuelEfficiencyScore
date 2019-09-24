@@ -62,7 +62,7 @@ export default class FetchDrivers {
 
     
 
-    async getVehiclesData(dateDebut, dateFin, listVehicle) {
+    async getVehiclesData(dateDebut, dateFin) {
 
         dateDebut = new Date(dateDebut);
         dateFin = new Date(dateFin);
@@ -95,7 +95,7 @@ export default class FetchDrivers {
         try {
 
             for(var i in listDate) {
-
+                    
                 const res = await axios({
                     method:'get',
                     url: this.apiUrl + 'vehicle/' + endUrl,
@@ -115,9 +115,10 @@ export default class FetchDrivers {
                 });
                 await this.sleep(10000);
                 
-                brutData.push(res.data.vehicleStatusResponse);
+                const myRes = res.data.vehicleStatusResponse;
+                brutData.push(myRes);
             }
-            
+
             return brutData;
         } catch (err) {
 

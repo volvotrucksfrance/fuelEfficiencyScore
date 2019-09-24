@@ -183,7 +183,7 @@
                 </template>
                 <template v-slot:no-results>
                     <v-alert :value="true" color="error" icon="warning">
-                    Votre recherche "{{ search }}" n'a pas de résultat.
+                        Aucun résultat.
                     </v-alert>
                 </template>
                 </v-data-table>
@@ -332,28 +332,38 @@ export default {
 
                 return this.$notify({
                     group: 'notif',
-                    title: 'Important message',
-                    text: 'date fin doit etre avant debut'
+                    title: 'Message',
+                    text: 'Date de debut doit etre antérieur à la date de fin'
                 });
             } else if(this.dateDebut == null || this.dateFin == null) {
 
                 return this.$notify({
                     group: 'notif',
-                    title: 'Important message',
-                    text: 'Select dateDebut and Fin'
+                    title: 'Message',
+                    text: 'Veuillez selectionner une date de debut et de fin'
                 });
             } else {
 
                 this.showDate = false;
                 this.showScores = true;
                 this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin);
-                console.log("all data", new MergeData().byDriver(this.allData));
+                const myMergeData = new MergeData();
+                myMergeData.byDriver(this.allData);
+
+                const formatAllData = myMergeData.getFormatedData();
+
+                for(var i in formatAllData) {
+                    
+                    const myScore = new FuelEfficiencyScore(formatAllData[i], this.$store.state.config);
+                    myScore.getScore();
+                }
+                
             }
         },
 
         goToListDrivers() {
 
-            window.scrollTo( 0, 0);
+            window.scrollTo(0, 0);
             this.showScores = false;
             this.showDate = true;
         }
@@ -409,10 +419,12 @@ export default {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+
+    transition: opacity .5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+
+    opacity: 0;
 }
 
 .center_body {
