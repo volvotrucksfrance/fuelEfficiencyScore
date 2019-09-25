@@ -169,17 +169,17 @@
                 </v-card-title>
                 <v-data-table
                     :headers="headers"
-                    :items="desserts"
+                    :items="driversScores"
                     :search="search"
                     :pagination.sync="pagination"
                 >
                 <template v-slot:items="props">
                     <td>{{ props.item.name }}</td>
-                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.calories)}">{{ props.item.calories }}</td>
-                    <td class="text-xs-right">{{ props.item.fat }}</td>
-                    <td class="text-xs-right">{{ props.item.carbs }}</td>
-                    <td class="text-xs-right">{{ props.item.protein }}</td>
-                    <td class="text-xs-right">{{ props.item.iron }}</td>
+                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.score)}">{{ props.item.score }}</td>
+                    <td class="text-xs-right">{{ props.item.anticipation }}</td>
+                    <td class="text-xs-right">{{ props.item.engine }}</td>
+                    <td class="text-xs-right">{{ props.item.speed }}</td>
+                    <td class="text-xs-right">{{ props.item.idle }}</td>
                 </template>
                 <template v-slot:no-results>
                     <v-alert :value="true" color="error" icon="warning">
@@ -250,18 +250,12 @@ export default {
                 { text: 'Adaptation de vitesse', value: 'speed_adaption' },
                 { text: 'Ralenti', value: 'idle' }
             ],
-            desserts: [
-                {
-                    name: 'KitKat',
-                    calories: 518,
-                    fat: 26.0,
-                    carbs: 65,
-                    protein: 7,
-                    iron: '6%'
-                }
+            driversScores: [
+
             ],
             search: "",
-            timeoutTest: null
+            timeoutTest: null,
+            saveFetchedData: []
         }
     },
     async created() {
@@ -350,14 +344,13 @@ export default {
                 const myMergeData = new MergeData();
                 myMergeData.byDriver(this.allData);
 
-                const formatAllData = myMergeData.getFormatedData();
+                this.saveFetchedData = myMergeData.getFormatedData();
 
-                for(var i in formatAllData) {
+                for(var i in this.saveFetchedData) {
                     
-                    const myScore = new FuelEfficiencyScore(formatAllData[i], this.$store.state.config);
-                    myScore.getScore();
+                    const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
+                    this.driversScores.push(myScore.getScore());
                 }
-                
             }
         },
 
@@ -382,12 +375,12 @@ export default {
     watch: {
         dialog: function(e) {
 
-            const tmpData = new FetchData();
-            
-            var data = tmpData.getData();
-
-            const myScore = new FuelEfficiencyScore(data, this.$store.state.config);
-            myScore.getScore();
+            this.driversScores = [];
+            for(var i in this.saveFetchedData) {
+                    
+                const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
+                this.driversScores.push(myScore.getScore());
+            }
         }
     }
 }

@@ -35,8 +35,6 @@ export default class FuelEfficiencyScore {
 
         const fes_score = this.getFesScore();
 
-        console.log(fes_score);
-
         var sum = 0;
 
         sum += ((this.defaultConfig.anticipation_and_braking.coasting*fes_score.coasting)
@@ -60,6 +58,22 @@ export default class FuelEfficiencyScore {
         sum += ((this.defaultConfig.stand_still.idling*fes_score.idling))
           *this.defaultConfig.stand_still.group_weight;
 
-        console.log(Math.round(sum/10000));
+        return {
+            name: this.data.driverID,
+            score: Math.round(sum/10000),
+            anticipation: this.average([fes_score.braking, fes_score.coasting]),
+            engine: this.average([fes_score.i_shift_a, fes_score.i_shift_m, fes_score.i_shift_p, fes_score.topgear, fes_score.inEco, fes_score.outEco, fes_score.overrev, fes_score.engineload]),
+            speed: this.average([fes_score.cruise, fes_score.overspeed]),
+            idle: this.average([fes_score.idling])
+        }
+    }
+
+    average(array) {
+        var sum = 0;
+        var count = array.length;
+        for (var i = 0; i < count; i++) {
+            sum = sum + array[i];
+        }
+        return sum / count;
     }
 }
