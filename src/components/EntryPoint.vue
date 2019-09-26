@@ -276,16 +276,18 @@ export default {
             this.showDate = false;
             this.showLogin = true;
         },
+        
         async fetchDrivers() {
 
             this.dataFetcher = new FetchDrivers(this.login, this.password);
             let tmpDrivers = await this.dataFetcher.getDrivers();
 
-            const res = tmpDrivers.status == 200;
+            console.log(tmpDrivers);
+            const res = tmpDrivers.length != 0;
 
             if(res) {
 
-                this.driverData = tmpDrivers.data.driverResponse.drivers;
+                this.driverData = tmpDrivers;
                 this.vehicleList = await this.dataFetcher.getVehicles();
 
                 this.vehicleList = this.vehicleList.data.vehicleResponse;
@@ -313,6 +315,19 @@ export default {
                 this.showDate = true;
             }
             this.isLogging = false;
+        },
+
+        getDriverNameById(id) {
+
+            for(var i in this.driverData) {
+
+                if(this.driverData[i].tachoDriverIdentification.driverIdentification.trim() == id.trim()) {
+
+                    return this.driverData[i].firstName + this.driverData[i].lastName;
+                }
+            }
+
+            return 'Unknown';
         },
 
         computedDateFormattedMomentjs(tmpDate) {
@@ -345,11 +360,17 @@ export default {
                 myMergeData.byDriver(this.allData);
 
                 this.saveFetchedData = myMergeData.getFormatedData();
+                
 
+                this.driversScores = [];
                 for(var i in this.saveFetchedData) {
+
+                    let myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
                     
-                    const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
-                    this.driversScores.push(myScore.getScore());
+                    let driverScore = myScore.getScore();
+                    driverScore.name = this.getDriverNameById(driverScore.name);
+
+                    this.driversScores.push(driverScore);
                 }
             }
         },
@@ -375,6 +396,7 @@ export default {
     watch: {
         dialog: function(e) {
 
+            window.scrollTo(0, 0);
             this.driversScores = [];
             for(var i in this.saveFetchedData) {
                     

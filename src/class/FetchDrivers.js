@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default class FetchDrivers {
+export default class  {
 
     //TODO HANDLE REFRESH TIMER
 
@@ -16,19 +16,41 @@ export default class FetchDrivers {
         const endUrl = 'drivers';
 
         try {
-            const res = await axios({
-                method:'get',
-                url: this.apiUrl + 'driver/' + endUrl,
-                auth: {
-                    username: this.login,
-                    password: this.password
-                },
-                headers: {
-                    Accept: this._getAcceptHeader(endUrl)
-                }
-            });
+
+            var lastDriverId;
+            var res = [];
+            var shouldFetchMore = false;
+
+            do {
+
+                var dataDriverChunk = await axios({
+                    method:'get',
+                    url: this.apiUrl + 'driver/' + endUrl,
+                    auth: {
+                        username: this.login,
+                        password: this.password
+                    },
+                    headers: {
+                        Accept: this._getAcceptHeader(endUrl),
+                        lastDriverId: lastDriverId
+                    },
+                    params: {
+                        lastDriverId: lastDriverId
+                    }
+                });
+
+                shouldFetchMore = dataDriverChunk.data.moreDataAvailable;
+
+                var tabDrivers = dataDriverChunk.data.driverResponse.drivers;
+                lastDriverId = tabDrivers[tabDrivers.length - 1].tachoDriverIdentification.cardIssuingMemberState 
+                                    .concat(tabDrivers[tabDrivers.length - 1].tachoDriverIdentification.driverIdentification);
+
+                res = res.concat(tabDrivers);
+
+            } while(shouldFetchMore);
 
             return res;
+            
         } catch (err) {
 
             return false;

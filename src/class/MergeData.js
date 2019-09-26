@@ -47,38 +47,41 @@ export default class MergeData {
 
             const driverID = this._getDriverID(tmpData);
 
-            if(this.mergedData[driverID] == undefined) {
+            if(driverID != null) {
 
-                this.mergedData[driverID] = this._newTemplate();
-            }
+                if(this.mergedData[driverID] == undefined) {
 
-            for (var i in this.mergedData[driverID]) {
-
-                if(i == 'cruise') {
-
-                    const valueSec = tmpData.accumulatedData.durationCruiseControlActive || 0;
-                    const valueMet = tmpData.accumulatedData.distanceCruiseControlActive || 0;
-
-                    this.mergedData[driverID][i].seconds += valueSec;
-                    this.mergedData[driverID][i].meters += valueMet;
-                } else if(i == 'distance') {
-
-                    const value = tmpData.hrTotalVehicleDistance || 0;
-
-                    this.mergedData[driverID][i] += value;
-                } else if(i == 'time') {
-
-                    const value = tmpData.totalEngineHours*60*60 || 0;
-
-                    this.mergedData[driverID][i] += value;
-                } else {
-
-                    this._addVolvoGroupValue(driverID, i, tmpData);
+                    this.mergedData[driverID] = this._newTemplate();
                 }
-
-                
-
+    
+                for (var i in this.mergedData[driverID]) {
+    
+                    if(i == 'cruise') {
+    
+                        const valueSec = tmpData.accumulatedData.durationCruiseControlActive || 0;
+                        const valueMet = tmpData.accumulatedData.distanceCruiseControlActive || 0;
+    
+                        this.mergedData[driverID][i].seconds += valueSec;
+                        this.mergedData[driverID][i].meters += valueMet;
+                    } else if(i == 'distance') {
+    
+                        const value = tmpData.hrTotalVehicleDistance || 0;
+    
+                        this.mergedData[driverID][i] += value;
+                    } else if(i == 'time') {
+    
+                        const value = tmpData.totalEngineHours*60*60 || 0;
+    
+                        this.mergedData[driverID][i] += value;
+                    } else {
+    
+                        this._addVolvoGroupValue(driverID, i, tmpData);
+                    }
+    
+                }
             }
+
+            
         }
 
         return this.mergedData;
