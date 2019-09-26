@@ -282,15 +282,11 @@ export default {
             this.dataFetcher = new FetchDrivers(this.login, this.password);
             let tmpDrivers = await this.dataFetcher.getDrivers();
 
-            console.log(tmpDrivers);
             const res = tmpDrivers.length != 0;
 
             if(res) {
 
                 this.driverData = tmpDrivers;
-                this.vehicleList = await this.dataFetcher.getVehicles();
-
-                this.vehicleList = this.vehicleList.data.vehicleResponse;
             }
             
             return !(res);
@@ -356,11 +352,11 @@ export default {
                 this.showDate = false;
                 this.showScores = true;
                 this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin);
+                
                 const myMergeData = new MergeData();
                 myMergeData.byDriver(this.allData);
 
                 this.saveFetchedData = myMergeData.getFormatedData();
-                
 
                 this.driversScores = [];
                 for(var i in this.saveFetchedData) {

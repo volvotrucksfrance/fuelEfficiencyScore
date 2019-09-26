@@ -41,9 +41,9 @@ export default class MergeData {
 
     byDriver(brut_data) {
 
-        for(var i in brut_data[0].vehicleStatuses) {
+        for(var i in brut_data) {
 
-            const tmpData = brut_data[0].vehicleStatuses[i];
+            const tmpData = brut_data[i];
 
             const driverID = this._getDriverID(tmpData);
 

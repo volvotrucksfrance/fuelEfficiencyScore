@@ -2,8 +2,6 @@ import axios from 'axios';
 
 export default class  {
 
-    //TODO HANDLE REFRESH TIMER
-
     constructor(login, password) {
 
         this.login = login;
@@ -112,7 +110,7 @@ export default class  {
         });
 
         const endUrl = 'vehiclestatuses';
-        const brutData = [];
+        var brutData = [];
 
         try {
 
@@ -137,11 +135,12 @@ export default class  {
                 });
                 await this.sleep(10000);
                 
-                const myRes = res.data.vehicleStatusResponse;
-                brutData.push(myRes);
+                const myRes = res.data.vehicleStatusResponse.vehicleStatuses;
+                brutData = brutData.concat(myRes);
             }
 
             return brutData;
+
         } catch (err) {
 
             return err;
