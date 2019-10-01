@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 
 export default class  {
 
@@ -85,7 +86,11 @@ export default class  {
     async getVehiclesData(dateDebut, dateFin) {
 
         dateDebut = new Date(dateDebut);
+        dateDebut.setHours(dateDebut.getHours() - 2);
+
         dateFin = new Date(dateFin);
+        dateFin.setHours(dateFin.getHours() + 22);
+        dateFin.setSeconds(dateFin.getSeconds() + 1);
 
         var listDate = [];
 
@@ -102,47 +107,101 @@ export default class  {
             });
         }
 
-        dateFin.setHours(23, 59, 59, 999);
-
         listDate.push({
             debut: dateDebut.toISOString(),
             fin: dateFin.toISOString()
         });
 
-        const endUrl = 'vehiclestatuses';
-        var brutData = [];
-
         try {
 
+            const endUrl = 'vehiclestatuses';
+            var brutData = {
+                debut : {
+    
+                },
+                fin: {
+    
+                }
+            };
+
             for(var i in listDate) {
-                    
-                const res = await axios({
-                    method:'get',
-                    url: this.apiUrl + 'vehicle/' + endUrl,
-                    auth: {
-                        username: this.login,
-                        password: this.password
-                    },
-                    headers: {
-                        Accept: this._getAcceptHeader(endUrl)
-                    },
-                    params: {
-                        starttime: listDate[i].debut,
-                        stoptime: listDate[i].fin,
-                        contentFilter: "ACCUMULATED",
-                        additionalContent: "VOLVOGROUPACCUMULATED"
+
+
+                var shouldFetchMore = false;
+                var lastVin;
+
+                var tmpStartTime = listDate[i].debut;
+
+                do {
+
+                    var resDataChunck = await axios({
+                        method:'get',
+                        url: this.apiUrl + 'vehicle/' + endUrl,
+                        auth: {
+                            username: this.login,
+                            password: this.password
+                        },
+                        headers: {
+                            Accept: this._getAcceptHeader(endUrl)
+                        },
+                        params: {
+                            starttime: tmpStartTime,
+                            stoptime: listDate[i].fin,
+                            contentFilter: "ACCUMULATED",
+                            additionalContent: "VOLVOGROUPACCUMULATED",
+                            datetype: 'created'
+                            /* lastVin: lastVin */
+                        }
+                    });
+
+                    var tabData = resDataChunck.data.vehicleStatusResponse.vehicleStatuses;
+
+                    if(tabData.length > 0 ) {
+
+                        lastVin = tabData[tabData.length - 1].vin;
+                        tmpStartTime = moment(tabData[tabData.length - 1].createdDateTime);
+                        tmpStartTime = tmpStartTime.add(1, 'seconds').toISOString();
                     }
-                });
-                await this.sleep(10000);
-                
-                const myRes = res.data.vehicleStatusResponse.vehicleStatuses;
-                brutData = brutData.concat(myRes);
+                    
+                    shouldFetchMore = resDataChunck.data.moreDataAvailable;                    
+
+                    for(var k in tabData) {
+
+                        //trucks data 
+                        if(brutData.debut[tabData[k].vin] == undefined) {
+
+                            brutData.debut[tabData[k].vin] = tabData[k];
+                        } else {
+    
+                            brutData.fin[tabData[k].vin] = tabData[k];
+                        }
+
+                        //Si driver ID attaché
+                        /* if(tabData[k].driver1Id != undefined) {
+
+                            var driverID = tabData[k].driver1Id.tachoDriverIdentification.driverIdentification;
+
+                            if(brutData.debut[driverID] == undefined) {
+    
+                                brutData.debut[driverID] = tabData[k];
+                            } else {
+    
+                                brutData.fin[driverID] = tabData[k];
+                            }
+                        } */
+                        
+                    }
+
+                    await this.sleep(10000);
+
+                } while(shouldFetchMore);
             }
 
             return brutData;
 
         } catch (err) {
 
+            console.log(err);
             return err;
         }
     

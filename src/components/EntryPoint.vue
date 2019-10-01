@@ -199,7 +199,6 @@
 
 <script>
 
-
 import FetchDrivers from '../class/FetchDrivers.js';
 import FuelEfficiencyScore from '../class/FuelEfficiencyScore.js';
 import FetchData from '../class/FetchData.js';
@@ -352,11 +351,10 @@ export default {
                 this.showDate = false;
                 this.showScores = true;
                 this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin);
-                
                 const myMergeData = new MergeData();
-                myMergeData.byDriver(this.allData);
+                console.log(myMergeData.byTrucks(this.allData).YV2RT60A1JB877957);
 
-                this.saveFetchedData = myMergeData.getFormatedData();
+                /* this.saveFetchedData = myMergeData.getFormatedData();
 
                 this.driversScores = [];
                 for(var i in this.saveFetchedData) {
@@ -367,7 +365,7 @@ export default {
                     driverScore.name = this.getDriverNameById(driverScore.name);
 
                     this.driversScores.push(driverScore);
-                }
+                } */
             }
         },
 
