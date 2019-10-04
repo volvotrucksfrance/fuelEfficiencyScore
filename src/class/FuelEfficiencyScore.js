@@ -59,7 +59,6 @@ export default class FuelEfficiencyScore {
           *this.defaultConfig.stand_still.group_weight;
 
         return {
-            name: this.data.driverID,
             score: Math.round(sum/10000),
             anticipation: this.average([fes_score.braking, fes_score.coasting]),
             engine: this.average([fes_score.i_shift_a, fes_score.i_shift_m, fes_score.i_shift_p, fes_score.topgear, fes_score.inEco, fes_score.outEco, fes_score.overrev, fes_score.engineload]),

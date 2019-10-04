@@ -62,19 +62,38 @@ export default class  {
         const endUrl = 'vehicles';
 
         try {
-            const res = await axios({
-                method:'get',
-                url: this.apiUrl + 'vehicle/' + endUrl,
-                auth: {
-                    username: this.login,
-                    password: this.password
-                },
-                headers: {
-                    Accept: this._getAcceptHeader(endUrl)
-                }
-            });
 
-            return res;
+
+            var shouldFetchMore = false;
+            var lastVin;
+            var listTrucks = [];
+
+            do {
+
+                const res = await axios({
+                    method:'get',
+                    url: this.apiUrl + 'vehicle/' + endUrl,
+                    auth: {
+                        username: this.login,
+                        password: this.password
+                    },
+                    headers: {
+                        Accept: this._getAcceptHeader(endUrl)
+                    },
+                    params: {
+                        lastVin: lastVin,
+                        additionalContent: 'VOLVOGROUPVEHICLE'
+                    }
+                });
+
+                lastVin = res.data.vehicleResponse.vehicles[res.data.vehicleResponse.vehicles.length - 1].vin;
+                shouldFetchMore = res.data.moreDataAvailable;
+                listTrucks = listTrucks.concat(res.data.vehicleResponse.vehicles);
+                
+            } while(shouldFetchMore);
+            
+
+            return listTrucks;
         } catch (err) {
 
             return false;
@@ -124,6 +143,15 @@ export default class  {
                 }
             };
 
+            var brutDataDriver = {
+                debut : {
+    
+                },
+                fin: {
+    
+                }
+            };
+
             for(var i in listDate) {
 
 
@@ -149,8 +177,9 @@ export default class  {
                             stoptime: listDate[i].fin,
                             contentFilter: "ACCUMULATED",
                             additionalContent: "VOLVOGROUPACCUMULATED",
-                            datetype: 'created'
-                            /* lastVin: lastVin */
+                            datetype: 'created',
+                            lastVin: lastVin,
+                            triggerFilter: 'TIMER,DRIVER_LOGIN,DRIVER_LOGOUT,IGNITION_ON,IGNITION_OFF'
                         }
                     });
 
@@ -181,12 +210,12 @@ export default class  {
 
                             var driverID = tabData[k].driver1Id.tachoDriverIdentification.driverIdentification;
 
-                            if(brutData.debut[driverID] == undefined) {
+                            if(brutDataDriver.debut[driverID] == undefined) {
     
-                                brutData.debut[driverID] = tabData[k];
+                                brutDataDriver.debut[driverID] = tabData[k];
                             } else {
     
-                                brutData.fin[driverID] = tabData[k];
+                                brutDataDriver.fin[driverID] = tabData[k];
                             }
                         } */
                         

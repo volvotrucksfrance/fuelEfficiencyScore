@@ -1,8 +1,8 @@
 {
-  "name": "importcfp",
-  "productName": "importCfp",
+  "name": "fuelefficiency",
+  "productName": "Efficacité énergétique",
   "version": "1.0.0",
-  "description": "Import cfp files",
+  "description": "Efficacité énergétique",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -32,17 +32,17 @@
         "packageManager": "yarn"
       },
       "electronWinstallerConfig": {
-        "name": "importCfp"
+        "name": "Efficacité énergétique"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
         "owner": "volvotrucksfrance",
-        "name": "importCFP"
+        "name": "Efficacité énergétique"
       },
       "windowsStoreConfig": {
         "packageName": "",
-        "name": "importCfp"
+        "name": "Efficacité énergétique"
       }
     }
   },
@@ -60,7 +60,7 @@
     "vuedraggable": "^2.20.0",
     "vueify": "^9.4.1",
     "vuejs-loading-plugin": "^1.0.5",
-    "vuetify": "^1.5.13",
+    "vuetify": "^1.5.18",
     "vuex": "^3.1.0",
     "xlsx": "^0.14.2"
   },

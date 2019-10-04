@@ -33,13 +33,13 @@
 
                     <v-text-field
                         v-model="state.config.anticipation_and_braking.coasting"
-                        label="Coasting"
+                        label="Roue libre"
                         @input="verifAnticipation()"
                         class="field_settings"
                     ></v-text-field>
                     <v-text-field
                         v-model="state.config.anticipation_and_braking.braking"
-                        label="Braking"
+                        label="Freinage"
                         @input="verifAnticipation()"
                         class="field_settings"
                     ></v-text-field>
@@ -75,42 +75,42 @@
                     <v-container class="field_settings">
                         <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.i_shift_auto"
-                                label="I shift auto"
+                                label="Mode automatique"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.i_shift_manuel"
-                                label="I shift manual"
+                                label="Mode manuel"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.i_shift_power"
-                                label="I shift power"
+                                label="Mode de puissance"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.top_gear"
-                                label="top gear"
+                                label="Rapport supérieur"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.withing_eco"
-                                label="eco"
+                                label="En mode économique"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.out_eco"
-                                label="out eco"
+                                label="Au-delà du mode économique"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.overrev"
-                                label="overRev"
+                                label="Rapport supérieur"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.engine_load"
-                                label="engine load"
+                                label="Surcharge moteur"
                                 @input="verifEngine()"
                             ></v-text-field>
 
@@ -146,13 +146,13 @@
 
                     <v-text-field
                         v-model="state.config.speed_adaption.fleet_overspeed"
-                        label="Fleet overspeed"
+                        label="Survitesse"
                         class="field_settings"
                         @input="verifSpeed()"
                     ></v-text-field>
                     <v-text-field
                         v-model="state.config.speed_adaption.cruise_control"
-                        label="Cruise control"
+                        label="Régulateur de vitesse"
                         class="field_settings"
                         @input="verifSpeed()"
                     ></v-text-field>
@@ -175,7 +175,7 @@
                         <div>
                             <v-text-field
                                 v-model="state.config.stand_still.group_weight"
-                                label="A l'arret"
+                                label="A l'arrêt"
                                 class="field_settings"
                                 @input="totalVerif()"
                                 :error="stand_still_error"
@@ -187,7 +187,7 @@
 
                     <v-text-field
                         v-model="state.config.stand_still.idling"
-                        label="idling"
+                        label="Ralenti"
                         class="field_settings"
                         @input="verifStill()"
                     ></v-text-field>

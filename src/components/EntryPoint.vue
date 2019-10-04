@@ -23,7 +23,7 @@
                         <v-flex class="text-xs-center">
                             <v-text-field
                                 v-model="password"
-                                label="Password"
+                                label="Mot de passe"
                                 type="password"
                             ></v-text-field>
                         </v-flex>
@@ -52,7 +52,7 @@
         <!-- SHOW DATE -->
         <transition name="fade">
         <div v-if="showDate" class="center_body">
-            <v-toolbar fixed flat color="white" app>
+            <v-toolbar fixed flat color="white">
                 <v-toolbar-title></v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
@@ -61,7 +61,7 @@
                     </v-btn>
                 </v-toolbar-items>
             </v-toolbar>
-            <v-content>
+            <v-content style="margin-top: 50px;">
             <v-container bg grid-list-md text-xs-center>
                 <v-layout row wrap align-center>
                     <v-flex xs6 lg6>
@@ -136,12 +136,12 @@
         <!-- SHOW SCORE -->
         <transition name="fade">
         <div v-if="showScores">
-            <v-toolbar fixed flat color="white" app>
+            <v-toolbar fixed flat color="white">
             <v-btn icon color="dark" @click="goToListDrivers">
               <v-icon>arrow_back</v-icon>
             </v-btn>
 
-            <v-toolbar-title>Score fuel efficiency</v-toolbar-title>
+            <v-toolbar-title>Score fuel efficiency {{this.convertFrenchFormat(this.$store.state.startTime)}} - {{this.convertFrenchFormat(this.$store.state.stopTime)}}</v-toolbar-title>
 
             <v-spacer></v-spacer>
 
@@ -149,7 +149,7 @@
                 <v-text-field
                     v-model="search"
                     append-icon="search"
-                    label="Search"
+                    label="Recherche"
                     single-line
                     hide-details
                 ></v-text-field>
@@ -169,22 +169,29 @@
                 </v-card-title>
                 <v-data-table
                     :headers="headers"
-                    :items="driversScores"
+                    :items="trucksScore"
                     :search="search"
                     :pagination.sync="pagination"
+                    :loading="loadingTrucks"
+                    :no-data-text="loadText"
+                    rows-per-page-text="Lignes par page"
                 >
                 <template v-slot:items="props">
                     <td>{{ props.item.name }}</td>
                     <td class="text-xs-right" :style="{'background-color': getColor(props.item.score)}">{{ props.item.score }}</td>
-                    <td class="text-xs-right">{{ props.item.anticipation }}</td>
-                    <td class="text-xs-right">{{ props.item.engine }}</td>
-                    <td class="text-xs-right">{{ props.item.speed }}</td>
-                    <td class="text-xs-right">{{ props.item.idle }}</td>
+                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.anticipation)}">{{ props.item.anticipation }}</td>
+                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.engine)}">{{ props.item.engine }}</td>
+                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.speed)}">{{ props.item.speed }}</td>
+                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.idle)}">{{ props.item.idle }}</td>
                 </template>
                 <template v-slot:no-results>
                     <v-alert :value="true" color="error" icon="warning">
                         Aucun résultat.
                     </v-alert>
+                </template>
+
+                <template slot="pageText" slot-scope="item">
+                    Element de {{item.pageStart}} - {{item.pageStop}}, sur {{item.itemsLength}}
                 </template>
                 </v-data-table>
             </v-container>
@@ -213,12 +220,15 @@ moment.locale('fr');
 const DATE_FORMAT = "DD/MM/YYYY";
 
 export default {
+    name: "EntryPoint",
     components: {
         Settings
     },
     data() {
 
         return {
+            loadText: "Chargement en cours...",
+            loadingTrucks: true,
             showLogin: true,
             showDate: false,
             login: "",
@@ -244,12 +254,12 @@ export default {
                     value: 'name'
                 },
                 { text: 'Score', value: 'score' },
-                { text: 'Anticipation et freinage', value: 'anticipation_and_braking' },
-                { text: 'Moteur et boite de vitesse', value: 'engine_and_gear_utilisation' },
-                { text: 'Adaptation de vitesse', value: 'speed_adaption' },
+                { text: 'Anticipation et freinage', value: 'anticipation' },
+                { text: 'Moteur et boite de vitesse', value: 'engine' },
+                { text: 'Adaptation de vitesse', value: 'speed' },
                 { text: 'Ralenti', value: 'idle' }
             ],
-            driversScores: [
+            trucksScore: [
 
             ],
             search: "",
@@ -265,9 +275,34 @@ export default {
 
     methods: {
 
-        getColor(e) {
+        convertFrenchFormat(date) {
 
-            return '#7FFF00';
+            const myDate = moment(date, 'YYYY-MM-DD');
+            return myDate.format('DD/MM/YYYY');
+        },
+        getColor(perc) {
+
+            if(perc <= 59) {
+
+                return "#FF0000";//rouge
+            } else if(perc <= 79) {
+
+                return "#FFFF33";//yellow
+            } else if(perc <= 100) {
+
+                return "#00FF00";//green
+            }
+            /* var r, g, b = 0;
+            if(perc < 50) {
+                r = 255;
+                g = Math.round(5.1 * perc);
+            }
+            else {
+                g = 255;
+                r = Math.round(510 - 5.10 * perc);
+            }
+            var h = r * 0x10000 + g * 0x100 + b * 0x1;
+            return '#' + ('000000' + h.toString(16)).slice(-6); */
         },
 
         logout() {
@@ -337,7 +372,7 @@ export default {
                 return this.$notify({
                     group: 'notif',
                     title: 'Message',
-                    text: 'Date de debut doit etre antérieur à la date de fin'
+                    text: 'La date de debut doit etre antérieur à la date de fin'
                 });
             } else if(this.dateDebut == null || this.dateFin == null) {
 
@@ -348,24 +383,35 @@ export default {
                 });
             } else {
 
+                this.trucksScore = [];
+                this.loadingTrucks = true;
+                this.loadText = "Chargement en cours...";
+                this.$store.commit('setStartDate', this.dateDebut);
+                this.$store.commit('setStopDate', this.dateFin);
                 this.showDate = false;
-                this.showScores = true;
+                this.showScores = true;  
                 this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin);
+
                 const myMergeData = new MergeData();
-                console.log(myMergeData.byTrucks(this.allData).YV2RT60A1JB877957);
-
-                /* this.saveFetchedData = myMergeData.getFormatedData();
-
-                this.driversScores = [];
+                myMergeData.byTrucks(this.allData);
+                this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
+                var tabTrucksScore = [];
                 for(var i in this.saveFetchedData) {
 
-                    let myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
+                    const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
                     
-                    let driverScore = myScore.getScore();
-                    driverScore.name = this.getDriverNameById(driverScore.name);
+                    const truckScore = myScore.getScore();
+                    if(!isNaN(truckScore.score)) {
 
-                    this.driversScores.push(driverScore);
-                } */
+                        truckScore.name = this.saveFetchedData[i].vin;
+                        tabTrucksScore.push(truckScore);
+                    }
+                    
+                }
+
+                this.loadingTrucks = false;
+                this.trucksScore = tabTrucksScore;
+                this.loadText = "Pas de données"
             }
         },
 
@@ -391,19 +437,27 @@ export default {
         dialog: function(e) {
 
             window.scrollTo(0, 0);
-            this.driversScores = [];
+            var tabTrucksScore = [];
             for(var i in this.saveFetchedData) {
-                    
+
                 const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
-                this.driversScores.push(myScore.getScore());
+                
+                const truckScore = myScore.getScore();
+                if(!isNaN(truckScore.score)) {
+
+                    truckScore.name = this.saveFetchedData[i].vin;
+                    tabTrucksScore.push(truckScore);
+                }
+                
             }
+            this.trucksScore = tabTrucksScore;
         }
     }
 }
 
 </script>
 
-<style>
+<style scoped>
 .body_app {
 
     width: 100%;

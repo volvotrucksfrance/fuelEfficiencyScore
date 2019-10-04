@@ -3,17 +3,18 @@
   <head>
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <title></title>
   </head>
   <body>
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vuetify@1.x/dist/vuetify.js"></script>
     <div id="app"></div>
   </body>
 
   <script>
-    import Vue from 'vue';
     import Vuex from 'vuex';
-    import Vuetify from 'vuetify';
     import Notifications from 'vue-notification';
     import velocity from 'velocity-animate';
 
@@ -21,18 +22,30 @@
 
     import EntryPoint from './components/EntryPoint.vue';
 
-    Vue.use(Vuetify);
-    Vue.use(Notifications, { velocity });
+
+    
+    Vue.use(Notifications);
     Vue.use(Vuex);
+    Vue.use(Vuetify);
 
     const store = new Vuex.Store({
         debug: true,
         state: {
           dialog: null,
           config: JSON.parse(localStorage.getItem('config')) || 
-            defaultConfig
+            defaultConfig,
+          startTime: '',
+          stopTime: ''
         },
         mutations: {
+          setStopDate(state, date) {
+
+            state.stopTime = date;
+          },
+          setStartDate(state, date) {
+
+            state.startTime = date;
+          },
           setDialog(state, bool) {
 
             state.dialog = bool;
@@ -64,7 +77,7 @@
 
     });
 
-    new Vue({
+    const app = new Vue({
         el: '#app',
         store,
         render: h => h(EntryPoint)

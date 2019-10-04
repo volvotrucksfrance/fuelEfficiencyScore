@@ -8,35 +8,74 @@ export default class MergeData {
         this.mergedDataTrucks = {};
     }
 
-    getFormatedData() {
+    getDataTrucks() {
+
+        return this.mergedDataTrucks;
+    }
+
+    getFormatedData(data) {
 
         let formatData = [];
 
-        for(var i in this.mergedData) {
+        const listVin = Object.keys(data);
 
-            const dist = this.mergedData[i].distance;
-            const time = this.mergedData[i].time;
+        for(var i in listVin) {
+
+            const vin = listVin[i];
+
+            const tmpData = data[vin];
+            const dist = tmpData.distance;
+            const time = tmpData.time;
+
+            if(dist != NaN && time != NaN) {
 
             formatData.push({
-                coasting: this.mergedData[i].coasting.meters/dist,
-                ratioFreinage: this.mergedData[i].brakeCount
-                                /this.mergedData[i].stopCount,
-                auto: this.mergedData[i].transmissionModeSeconds[0].value/time,
-                manual: this.mergedData[i].transmissionModeSeconds[1].value/time,
-                power: this.mergedData[i].transmissionModeSeconds[2].value/time,
-                topGear: this.mergedData[i].topGear.meters/dist,
-                inEco: this.mergedData[i].engineWithinGreenArea.meters/dist,
-                outEco: this.mergedData[i].engineOutOfGreenArea.meters/dist,
-                overrev: this.mergedData[i].engineOverrev.meters/dist,
-                engineload: this.mergedData[i].engineOverload.meters/dist,
-                overspeed: this.mergedData[i].roadOverspeed.meters/dist,
-                cruise: this.mergedData[i].cruise.meters/dist,
+                coasting: (tmpData.coasting.meters/dist)*100,
+                ratioFreinage: tmpData.brakeCount
+                                /tmpData.stopCount,
+                auto: (tmpData.transmissionModeSeconds[0].value/time)*100,
+                manual: (tmpData.transmissionModeSeconds[1].value/time)*100,
+                power: (tmpData.transmissionModeSeconds[2].value/time)*100,
+                topGear: (tmpData.topGear.meters/dist)*100,
+                inEco: (tmpData.engineWithinGreenArea.meters/dist)*100,
+                outEco: (tmpData.engineOutOfGreenArea.meters/dist)*100,
+                overrev: (tmpData.engineOverrev.meters/dist)*100,
+                engineload: (tmpData.engineOverload.meters/dist)*100,
+                overspeed: (tmpData.roadOverspeed.meters/dist)*100,
+                cruise: (tmpData.cruise.meters/dist)*100,
                 idling: 0,
-                driverID: i
+                vin: vin
             });
+            }
         }
 
         return formatData;
+
+        /* for(var i in data) {
+
+            const dist = data[i].distance;
+            const time = data[i].time;
+
+            formatData.push({
+                coasting: data[i].coasting.meters/dist,
+                ratioFreinage: data[i].brakeCount
+                                /data[i].stopCount,
+                auto: data[i].transmissionModeSeconds[0].value/time,
+                manual: data[i].transmissionModeSeconds[1].value/time,
+                power: data[i].transmissionModeSeconds[2].value/time,
+                topGear: data[i].topGear.meters/dist,
+                inEco: data[i].engineWithinGreenArea.meters/dist,
+                outEco: data[i].engineOutOfGreenArea.meters/dist,
+                overrev: data[i].engineOverrev.meters/dist,
+                engineload: data[i].engineOverload.meters/dist,
+                overspeed: data[i].roadOverspeed.meters/dist,
+                cruise: data[i].cruise.meters/dist,
+                idling: 0,
+                vin: i
+            });
+        }
+
+        return formatData; */
     }
 
     byTrucks(brut_data) {
@@ -66,9 +105,6 @@ export default class MergeData {
     }
 
     makeDiff(a, b) {
-
-        console.log(a);
-        console.log(b);
  
         const bVolvoData = b.accumulatedData.volvoGroupAccumulated;
         const aVolvoData =  a.accumulatedData.volvoGroupAccumulated;
@@ -77,8 +113,8 @@ export default class MergeData {
             "time": b.totalEngineHours*60*60 -  a.totalEngineHours*60*60,
             "distance": b.hrTotalVehicleDistance - a.hrTotalVehicleDistance,
             "cruise": {
-                "seconds": bVolvoData.durationCruiseControlActive - aVolvoData.durationCruiseControlActive,
-                "meters": bVolvoData.distanceCruiseControlActive - aVolvoData.distanceCruiseControlActive,
+                "seconds": b.accumulatedData.durationCruiseControlActive - a.accumulatedData.durationCruiseControlActive,
+                "meters": b.accumulatedData.distanceCruiseControlActive - a.accumulatedData.distanceCruiseControlActive,
             },
             "brakeCount": bVolvoData.brakeCount - aVolvoData.brakeCount,
             "coasting": {
