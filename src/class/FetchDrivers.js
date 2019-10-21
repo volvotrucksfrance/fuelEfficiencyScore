@@ -1,5 +1,15 @@
 import axios from 'axios';
+import * as tunnel from 'tunnel';
+const agent = tunnel.httpsOverHttp({
+    proxy: {
+        host: 'http://proxy.vtec.volvo.se',
+        port: 8080,
+    },
+});
 import moment from 'moment';
+import rp from 'request-promise';
+const rpp = rp.defaults({'proxy':'http://proxy.vtec.volvo.se:8080'});
+var qs = require('querystring');
 
 export default class  {
 
@@ -162,17 +172,17 @@ export default class  {
 
                 do {
 
-                    var resDataChunck = await axios({
-                        method:'get',
+                    var tabData = await rpp({
+                        method: 'GET',
                         url: this.apiUrl + 'vehicle/' + endUrl,
                         auth: {
-                            username: this.login,
+                            user: this.login,
                             password: this.password
                         },
                         headers: {
                             Accept: this._getAcceptHeader(endUrl)
                         },
-                        params: {
+                        qs: {
                             starttime: tmpStartTime,
                             stoptime: listDate[i].fin,
                             contentFilter: "ACCUMULATED",
@@ -182,8 +192,9 @@ export default class  {
                             triggerFilter: 'TIMER,DRIVER_LOGIN,DRIVER_LOGOUT,IGNITION_ON,IGNITION_OFF'
                         }
                     });
+                    const data = JSON.parse(tabData);
 
-                    var tabData = resDataChunck.data.vehicleStatusResponse.vehicleStatuses;
+                    tabData = data.vehicleStatusResponse.vehicleStatuses;
 
                     if(tabData.length > 0 ) {
 
@@ -192,9 +203,9 @@ export default class  {
                         tmpStartTime = tmpStartTime.add(1, 'seconds').toISOString();
                     }
                     
-                    shouldFetchMore = resDataChunck.data.moreDataAvailable;                    
+                    shouldFetchMore = data.moreDataAvailable;                    
 
-                    for(var k in tabData) {
+                    for(var k in tabData) { 
 
                         //trucks data 
                         if(brutData.debut[tabData[k].vin] == undefined) {
@@ -204,20 +215,6 @@ export default class  {
     
                             brutData.fin[tabData[k].vin] = tabData[k];
                         }
-
-                        //Si driver ID attaché
-                        /* if(tabData[k].driver1Id != undefined) {
-
-                            var driverID = tabData[k].driver1Id.tachoDriverIdentification.driverIdentification;
-
-                            if(brutDataDriver.debut[driverID] == undefined) {
-    
-                                brutDataDriver.debut[driverID] = tabData[k];
-                            } else {
-    
-                                brutDataDriver.fin[driverID] = tabData[k];
-                            }
-                        } */
                         
                     }
 

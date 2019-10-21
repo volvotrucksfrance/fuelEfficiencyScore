@@ -391,7 +391,7 @@ export default {
                 this.showDate = false;
                 this.showScores = true;  
                 this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin);
-
+                console.log("allData", this.allData);
                 const myMergeData = new MergeData();
                 myMergeData.byTrucks(this.allData);
                 this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
