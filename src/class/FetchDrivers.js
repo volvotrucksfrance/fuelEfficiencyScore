@@ -112,7 +112,7 @@ export default class  {
 
     
 
-    async getVehiclesData(dateDebut, dateFin) {
+    async getVehiclesData(dateDebut, dateFin, store, vue) {
 
         dateDebut = new Date(dateDebut);
         dateDebut.setHours(dateDebut.getHours() - 2);
@@ -172,6 +172,7 @@ export default class  {
 
                 do {
 
+                    store.commit('setPourcentage', this.dateToPourcentage(dateDebut, tmpStartTime, dateFin));
                     var tabData = await rpp({
                         method: 'GET',
                         url: this.apiUrl + 'vehicle/' + endUrl,
@@ -231,6 +232,13 @@ export default class  {
             return err;
         }
     
+    }
+
+    dateToPourcentage(start, a, end) {
+
+        var res =  start == new Date(a) ? 0 : ((new Date(a) - start)/(end - start)*100).toFixed(1);
+
+        return `${res}%`;
     }
 
     _getAcceptHeader(dataType) {

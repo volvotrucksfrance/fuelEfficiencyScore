@@ -173,7 +173,7 @@
                     :search="search"
                     :pagination.sync="pagination"
                     :loading="loadingTrucks"
-                    :no-data-text="loadText"
+                    :no-data-text="this.$store.state.pourcentage"
                     rows-per-page-text="Lignes par page"
                 >
                 <template v-slot:items="props">
@@ -227,7 +227,7 @@ export default {
     data() {
 
         return {
-            loadText: "Chargement en cours...",
+            loadText: this.$store.state.pourcentage,
             loadingTrucks: true,
             showLogin: true,
             showDate: false,
@@ -385,13 +385,12 @@ export default {
 
                 this.trucksScore = [];
                 this.loadingTrucks = true;
-                this.loadText = "Chargement en cours...";
+                //this.loadText = this.$store.state.pourcentage;
                 this.$store.commit('setStartDate', this.dateDebut);
                 this.$store.commit('setStopDate', this.dateFin);
                 this.showDate = false;
                 this.showScores = true;  
-                this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin);
-                console.log("allData", this.allData);
+                this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin, this.$store, this);
                 const myMergeData = new MergeData();
                 myMergeData.byTrucks(this.allData);
                 this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());

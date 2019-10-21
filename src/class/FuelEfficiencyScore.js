@@ -73,6 +73,6 @@ export default class FuelEfficiencyScore {
         for (var i = 0; i < count; i++) {
             sum = sum + array[i];
         }
-        return sum / count;
+        return (sum / count).toFixed(1);
     }
 }
