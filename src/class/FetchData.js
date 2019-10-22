@@ -1,64 +1,214 @@
-import data from '../data/fake_data.js';
+import moment from 'moment';
 
-export default class FetchData {
+var rp = require('request-promise');
 
-    constructor(listTrucks) {
+if(process.env.VOLVO_HTTP_PROXY != undefined) {
 
-        this.listTrucks = listTrucks;
+    rp = rp.defaults({'proxy':'http://proxy.vtec.volvo.se:8080'});
+}
+
+
+
+export default class  {
+
+    constructor(login, password) {
+
+        this.login = login;
+        this.password = password;
+        this.apiUrl = "https://api.volvotrucks.com/";
     }
 
-    getData() {
+    async getDrivers()  {
 
-        let accumulatedData = data.vehicleStatusResponse.vehicleStatuses[0].accumulatedData;
-        let volvoData = accumulatedData.volvoGroupAccumulated;
+        const endUrl = 'drivers';
 
-        const totalDist = data.vehicleStatusResponse.vehicleStatuses[0].hrTotalVehicleDistance;
+        try {
 
-        let brut_stats = {};
+            var lastDriverId;
+            var res = [];
+            var shouldFetchMore = false;
 
-        //i-shift
-        brut_stats.auto = 0;
-        brut_stats.manual = 0;
-        brut_stats.power = 0;
+            do {
 
-            let arrayShift = volvoData.transmissionModeSeconds;
+                var dataDriverChunk = await rp({
+                    method: 'GET',
+                    url: this.apiUrl + 'driver/' + endUrl,
+                    auth: {
+                        user: this.login,
+                        password: this.password
+                    },
+                    headers: {
+                        Accept: this._getAcceptHeader(endUrl),
+                        lastDriverId: lastDriverId
+                    },
+                    qs: {
+                        lastDriverId: lastDriverId
+                    }
+                });
 
-            for(var i in arrayShift) {
+                dataDriverChunk = JSON.parse(dataDriverChunk);
 
-                switch (arrayShift[i].label) {
-                    case 'AUTO':
-                        brut_stats.auto += arrayShift[i].value;
-                        break;
-                    case 'MANUAL':
-                        brut_stats.manual += arrayShift[i].value;
-                        break;
-                    case 'POWER':
-                        brut_stats.power += arrayShift[i].value;
-                        break;
+                shouldFetchMore = dataDriverChunk.moreDataAvailable;
+
+                var tabDrivers = dataDriverChunk.driverResponse.drivers;
+                lastDriverId = tabDrivers[tabDrivers.length - 1].tachoDriverIdentification.cardIssuingMemberState 
+                                    .concat(tabDrivers[tabDrivers.length - 1].tachoDriverIdentification.driverIdentification);
+
+                res = res.concat(tabDrivers);
+
+            } while(shouldFetchMore);
+
+            return true;
+            
+        } catch (err) {
+
+            return false;
+        }
+
+    }
+
+
+    async getVehiclesData(dateDebut, dateFin, store, vue) {
+
+        dateDebut = new Date(dateDebut);
+        dateDebut.setHours(dateDebut.getHours() - 2);
+
+        dateFin = new Date(dateFin);
+        dateFin.setHours(dateFin.getHours() + 22);
+        dateFin.setSeconds(dateFin.getSeconds() + 1);
+
+        var listDate = [];
+
+        while(dateDebut.addDays(14) < dateFin) {
+
+
+            let tmpDebut = dateDebut;
+            dateDebut = dateDebut.addDays(14);
+            let tmpFin = dateDebut;
+
+            listDate.push({
+                debut: tmpDebut.toISOString(),
+                fin: tmpFin.toISOString()
+            });
+        }
+
+        listDate.push({
+            debut: dateDebut.toISOString(),
+            fin: dateFin.toISOString()
+        });
+
+        try {
+
+            const endUrl = 'vehiclestatuses';
+            var brutData = {
+                debut : {
+    
+                },
+                fin: {
+    
                 }
+            };
+
+            var brutDataDriver = {
+                debut : {
+    
+                },
+                fin: {
+    
+                }
+            };
+
+            for(var i in listDate) {
+
+
+                var shouldFetchMore = false;
+                var lastVin;
+
+                var tmpStartTime = listDate[i].debut;
+
+                do {
+
+                    store.commit('setPourcentage', this.dateToPourcentage(dateDebut, tmpStartTime, dateFin));
+                    var tabData = await rp({
+                        method: 'GET',
+                        url: this.apiUrl + 'vehicle/' + endUrl,
+                        auth: {
+                            user: this.login,
+                            password: this.password
+                        },
+                        headers: {
+                            Accept: this._getAcceptHeader(endUrl)
+                        },
+                        qs: {
+                            starttime: tmpStartTime,
+                            stoptime: listDate[i].fin,
+                            contentFilter: "ACCUMULATED",
+                            additionalContent: "VOLVOGROUPACCUMULATED",
+                            datetype: 'created',
+                            lastVin: lastVin,
+                            triggerFilter: 'TIMER,DRIVER_LOGIN,DRIVER_LOGOUT,IGNITION_ON,IGNITION_OFF'
+                        }
+                    });
+                    const data = JSON.parse(tabData);
+
+                    tabData = data.vehicleStatusResponse.vehicleStatuses;
+
+                    if(tabData.length > 0 ) {
+
+                        lastVin = tabData[tabData.length - 1].vin;
+                        tmpStartTime = moment(tabData[tabData.length - 1].createdDateTime);
+                        tmpStartTime = tmpStartTime.add(1, 'seconds').toISOString();
+                    }
+                    
+                    shouldFetchMore = data.moreDataAvailable;                    
+
+                    for(var k in tabData) { 
+
+                        //trucks data 
+                        if(brutData.debut[tabData[k].vin] == undefined) {
+
+                            brutData.debut[tabData[k].vin] = tabData[k];
+                        } else {
+    
+                            brutData.fin[tabData[k].vin] = tabData[k];
+                        }
+                        
+                    }
+                    console.log('another one');
+                    await this.sleep(10000);
+
+                } while(shouldFetchMore);
             }
-        /////////
 
-        brut_stats.coasting = (volvoData.coasting.meters/(totalDist - accumulatedData.distanceCruiseControlActive))*100;
+            return brutData;
 
-        brut_stats.ratioFreinage = volvoData.brakeCount/volvoData.stopCount;
+        } catch (err) {
 
-        brut_stats.topGear = volvoData.topGear.meters;
-        
-        brut_stats.inEco = volvoData.engineWithinGreenArea.meters;
-
-        brut_stats.outEco = volvoData.engineOutOfGreenArea.meters;
-
-        brut_stats.overrev = volvoData.engineOverrev.meters;
-
-        brut_stats.engineload = volvoData.engineOverload.meters;
-
-        brut_stats.overspeed = volvoData.roadOverspeed.meters;
-
-        brut_stats.cruise = accumulatedData.durationCruiseControlActive;
-
-        brut_stats.idling = 5;
-
-        return brut_stats;
+            console.log(err);
+            return err;
+        }
+    
     }
+
+    dateToPourcentage(start, a, end) {
+
+        var res =  start == new Date(a) ? 0 : ((new Date(a) - start)/(end - start)*100).toFixed(1);
+
+        return `${res}%`;
+    }
+
+    _getAcceptHeader(dataType) {
+
+        return `application/x.volvogroup.com.${dataType}.v1.0+json; UTF-8`
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
 }

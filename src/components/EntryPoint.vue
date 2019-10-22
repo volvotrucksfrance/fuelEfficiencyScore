@@ -206,9 +206,8 @@
 
 <script>
 
-import FetchDrivers from '../class/FetchDrivers.js';
-import FuelEfficiencyScore from '../class/FuelEfficiencyScore.js';
 import FetchData from '../class/FetchData.js';
+import FuelEfficiencyScore from '../class/FuelEfficiencyScore.js';
 import MergeData from '../class/MergeData.js';
 
 import Settings from './Settings.vue';
@@ -303,7 +302,7 @@ export default {
         
         async fetchDrivers() {
 
-            this.dataFetcher = new FetchDrivers(this.login, this.password);
+            this.dataFetcher = new FetchData(this.login, this.password);
             let tmpDrivers = await this.dataFetcher.getDrivers();
 
             return tmpDrivers;
