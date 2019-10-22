@@ -92,7 +92,7 @@ export default class MergeData {
             //Si Debut et Fin
             if(fin[tmpVin] && this.hasVolvoGroup(debut[tmpVin]) && this.hasVolvoGroup(fin[tmpVin])) {
 
-                this.mergedDataTrucks[tmpVin] = this.makeDiff(debut[tmpVin], fin[tmpVin]);
+                this.mergedDataTrucks[tmpVin] = this.makeDiffObj(debut[tmpVin], fin[tmpVin]);
             }
         }
 
@@ -104,82 +104,109 @@ export default class MergeData {
         return Object.entries(data.accumulatedData.volvoGroupAccumulated).length != 0;
     }
 
-    makeDiff(a, b) {
+    makeDiff(a, b, property, type) {
+
+        if(property == undefined) {
+
+            return a - b;
+
+        } else if(a != undefined && b != undefined && a[property] != undefined && b[property] != undefined) {
+
+            if(type == 'array' && a[property].value != undefined && b[property].value != undefined) {
+
+                return a[property].value - b[property].value;
+    
+            } else if(type != 'array') {
+
+                return a[property] - b[property];
+            } else {
+
+                return 0;
+            }
+            
+
+        } else {
+
+            return 0;
+        }
+    }
+
+    makeDiffObj(a, b) {
  
         const bVolvoData = b.accumulatedData.volvoGroupAccumulated;
         const aVolvoData =  a.accumulatedData.volvoGroupAccumulated;
 
         return {
-            "time": b.totalEngineHours*60*60 -  a.totalEngineHours*60*60,
-            "distance": b.hrTotalVehicleDistance - a.hrTotalVehicleDistance,
+            "time": this.makeDiff(b.totalEngineHours*60*60,  a.totalEngineHours*60*60),
+            "distance": this.makeDiff(b.hrTotalVehicleDistance, a.hrTotalVehicleDistance),
             "cruise": {
-                "seconds": b.accumulatedData.durationCruiseControlActive - a.accumulatedData.durationCruiseControlActive,
-                "meters": b.accumulatedData.distanceCruiseControlActive - a.accumulatedData.distanceCruiseControlActive,
+                "seconds": this.makeDiff(b.accumulatedData.durationCruiseControlActive, a.accumulatedData.durationCruiseControlActive),
+                "meters": this.makeDiff(b.accumulatedData.distanceCruiseControlActive, a.accumulatedData.distanceCruiseControlActive),
             },
-            "brakeCount": bVolvoData.brakeCount - aVolvoData.brakeCount,
+            "brakeCount": this.makeDiff(bVolvoData.brakeCount, aVolvoData.brakeCount),
             "coasting": {
-                "seconds": bVolvoData.coasting.seconds - aVolvoData.coasting.seconds,
-                "meters": bVolvoData.coasting.meters - aVolvoData.coasting.meters
+                "seconds": this.makeDiff(bVolvoData.coasting, aVolvoData.coasting, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.coasting, aVolvoData.coasting, 'meters')
             },
             "engineOverload": {
-                "seconds": bVolvoData.engineOverload.seconds - aVolvoData.engineOverload.seconds,
-                "meters": bVolvoData.engineOverload.meters - aVolvoData.engineOverload.meters
+                "seconds": this.makeDiff(bVolvoData.engineOverload, aVolvoData.engineOverload, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineOverload, aVolvoData.engineOverload, 'meters')
             },
             "engineOverrev": {
-                "seconds": bVolvoData.engineOverrev.seconds - aVolvoData.engineOverrev.seconds,
-                "meters": bVolvoData.engineOverrev.meters - aVolvoData.engineOverrev.meters
+                "seconds": this.makeDiff(bVolvoData.engineOverrev, aVolvoData.engineOverrev, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineOverrev, aVolvoData.engineOverrev, 'meters')
             },
             "engineWithinGreenArea": {
-                "seconds": bVolvoData.engineWithinGreenArea.seconds - aVolvoData.engineWithinGreenArea.seconds,
-                "meters": bVolvoData.engineWithinGreenArea.meters - aVolvoData.engineWithinGreenArea.meters
+                "seconds": this.makeDiff(bVolvoData.engineWithinGreenArea, aVolvoData.engineWithinGreenArea, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineWithinGreenArea, aVolvoData.engineWithinGreenArea, 'meters')
             },
             "engineOutOfGreenArea": {
-                "seconds": bVolvoData.engineOutOfGreenArea.seconds - aVolvoData.engineOutOfGreenArea.seconds,
-                "meters": bVolvoData.engineOutOfGreenArea.meters - aVolvoData.engineOutOfGreenArea.meters
+                "seconds": this.makeDiff(bVolvoData.engineOutOfGreenArea, aVolvoData.engineOutOfGreenArea, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineOutOfGreenArea, aVolvoData.engineOutOfGreenArea, 'meters')
             },
             "transmissionModeSeconds": [
                 {
                     "label": "AUTO",
-                    "value": bVolvoData.transmissionModeSeconds[0].value - aVolvoData.transmissionModeSeconds[0].value
+                    "value": this.makeDiff(bVolvoData.transmissionModeSeconds, aVolvoData.transmissionModeSeconds, 0, 'array')
                 },
                 {
                     "label": "MANUAL",
-                    "value": bVolvoData.transmissionModeSeconds[1].value - aVolvoData.transmissionModeSeconds[1].value
+                    "value": this.makeDiff(bVolvoData.transmissionModeSeconds, aVolvoData.transmissionModeSeconds, 1, 'array')
                 },
                 {
                     "label": "POWER",
-                    "value": bVolvoData.transmissionModeSeconds[2].value - aVolvoData.transmissionModeSeconds[2].value
+                    "value": this.makeDiff(bVolvoData.transmissionModeSeconds, aVolvoData.transmissionModeSeconds, 2, 'array')
                 }
             ],
             "convoyWeightMeters": [
                 {
                     "label": "LIGHT",
-                    "value": bVolvoData.convoyWeightMeters[0].value - aVolvoData.convoyWeightMeters[0].value
+                    "value": this.makeDiff(bVolvoData.convoyWeightMeters, aVolvoData.convoyWeightMeters, 0, 'array')
                 },
                 {
                     "label": "MEDIUM",
-                    "value": bVolvoData.convoyWeightMeters[1].value - aVolvoData.convoyWeightMeters[1].value
+                    "value": this.makeDiff(bVolvoData.convoyWeightMeters, aVolvoData.convoyWeightMeters, 1, 'array')
                 },
                 {
                     "label": "FULL",
-                    "value": bVolvoData.convoyWeightMeters[2].value - aVolvoData.convoyWeightMeters[2].value
+                    "value": this.makeDiff(bVolvoData.convoyWeightMeters, aVolvoData.convoyWeightMeters, 2, 'array')
                 }
             ],
             "roadOverspeed": {
-                "seconds": bVolvoData.roadOverspeed.seconds - aVolvoData.roadOverspeed.seconds,
-                "meters": bVolvoData.roadOverspeed.meters - aVolvoData.roadOverspeed.meters
+                "seconds": this.makeDiff(bVolvoData.roadOverspeed, aVolvoData.roadOverspeed, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.roadOverspeed, aVolvoData.roadOverspeed, 'meters')
             },
-            "stopCount": bVolvoData.stopCount - aVolvoData.stopCount,
+            "stopCount": this.makeDiff(bVolvoData.stopCount, aVolvoData.stopCount),
             "topGear": {
-                "seconds": bVolvoData.topGear.seconds - aVolvoData.topGear.seconds,
-                "meters": bVolvoData.topGear.meters - aVolvoData.topGear.meters
+                "seconds": this.makeDiff(bVolvoData.topGear, aVolvoData.topGear, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.topGear, aVolvoData.topGear, 'meters')
             },
-            "engineTotalCatalystUsed": bVolvoData.engineTotalCatalystUsed - aVolvoData.engineTotalCatalystUsed,
-            /* "withoutCatalyst": {
-                "seconds": bVolvoData.withoutCatalyst.seconds - aVolvoData.withoutCatalyst.seconds,
-                "meters": bVolvoData.withoutCatalyst.meters - aVolvoData.withoutCatalyst.meters
-            } */
-        }; 
+            "engineTotalCatalystUsed": this.makeDiff(bVolvoData.engineTotalCatalystUsed, aVolvoData.engineTotalCatalystUsed),
+            "withoutCatalyst": {
+                "seconds": this.makeDiff(bVolvoData.withoutCatalyst, aVolvoData.withoutCatalyst, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.withoutCatalyst, aVolvoData.withoutCatalyst, 'meters')
+            }
+        }
     }
 
     byDriver(brut_data) {

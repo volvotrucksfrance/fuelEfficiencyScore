@@ -11,7 +11,14 @@ let mainWindow;
 
 const createWindow = () => {
   // Create the browser window.
-  mainWindow = new BrowserWindow({show: false});
+  mainWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      devTools: true
+    },
+    width: 1280,
+    heigth: 1024 
+  });
   mainWindow.maximize();
   mainWindow.show();
 

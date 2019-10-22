@@ -178,11 +178,11 @@
                 >
                 <template v-slot:items="props">
                     <td>{{ props.item.name }}</td>
-                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.score)}">{{ props.item.score }}</td>
-                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.anticipation)}">{{ props.item.anticipation }}</td>
-                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.engine)}">{{ props.item.engine }}</td>
-                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.speed)}">{{ props.item.speed }}</td>
-                    <td class="text-xs-right" :style="{'background-color': getColor(props.item.idle)}">{{ props.item.idle }}</td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.score)}">{{ props.item.score }}</td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.anticipation)}">{{ props.item.anticipation }}</td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.engine)}">{{ props.item.engine }}</td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.speed)}">{{ props.item.speed }}</td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.idle)}">{{ props.item.idle }}</td>
                 </template>
                 <template v-slot:no-results>
                     <v-alert :value="true" color="error" icon="warning">
@@ -243,8 +243,9 @@ export default {
             isLogging: false,
             showScores: false,
             pagination: {
-                sortBy: 'name',
-                rowsPerPage: -1
+                sortBy: 'score',
+                rowsPerPage: -1,
+                descending: true
             },
             selected: [],
             headers: [
@@ -284,25 +285,14 @@ export default {
 
             if(perc <= 59) {
 
-                return "#FF0000";//rouge
+                return "#BB0B0B";//rouge
             } else if(perc <= 79) {
 
-                return "#FFFF33";//yellow
+                return "#FFCC00";//yellow
             } else if(perc <= 100) {
 
-                return "#00FF00";//green
+                return "#32CD32";//green
             }
-            /* var r, g, b = 0;
-            if(perc < 50) {
-                r = 255;
-                g = Math.round(5.1 * perc);
-            }
-            else {
-                g = 255;
-                r = Math.round(510 - 5.10 * perc);
-            }
-            var h = r * 0x10000 + g * 0x100 + b * 0x1;
-            return '#' + ('000000' + h.toString(16)).slice(-6); */
         },
 
         logout() {
@@ -316,14 +306,7 @@ export default {
             this.dataFetcher = new FetchDrivers(this.login, this.password);
             let tmpDrivers = await this.dataFetcher.getDrivers();
 
-            const res = tmpDrivers.length != 0;
-
-            if(res) {
-
-                this.driverData = tmpDrivers;
-            }
-            
-            return !(res);
+            return tmpDrivers;
         },
 
         async tryCredentials() {
@@ -336,15 +319,25 @@ export default {
 
         saveCredentials() {
 
-            if(!this.showLogin) {
+            this.isLogging = false;
+            if(this.showLogin) {
 
                 localStorage.setItem('login', this.login);
                 localStorage.setItem('password', this.password);
 
                 //User is logged so show list driverData
                 this.showDate = true;
+                this.showLogin = false;
+            } else {
+
+                this.$notify({
+                    group: 'notif',
+                    title: 'Message',
+                    text: 'Erreur login/mot de passe',
+                    type: 'warning'
+                });
+                this.showLogin = true;
             }
-            this.isLogging = false;
         },
 
         getDriverNameById(id) {

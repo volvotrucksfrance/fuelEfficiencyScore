@@ -9,7 +9,6 @@ const agent = tunnel.httpsOverHttp({
 import moment from 'moment';
 import rp from 'request-promise';
 const rpp = rp.defaults({'proxy':'http://proxy.vtec.volvo.se:8080'});
-var qs = require('querystring');
 
 export default class  {
 
@@ -32,25 +31,27 @@ export default class  {
 
             do {
 
-                var dataDriverChunk = await axios({
-                    method:'get',
+                var dataDriverChunk = await rpp({
+                    method: 'GET',
                     url: this.apiUrl + 'driver/' + endUrl,
                     auth: {
-                        username: this.login,
+                        user: this.login,
                         password: this.password
                     },
                     headers: {
                         Accept: this._getAcceptHeader(endUrl),
                         lastDriverId: lastDriverId
                     },
-                    params: {
+                    qs: {
                         lastDriverId: lastDriverId
                     }
                 });
 
-                shouldFetchMore = dataDriverChunk.data.moreDataAvailable;
+                dataDriverChunk = JSON.parse(dataDriverChunk);
 
-                var tabDrivers = dataDriverChunk.data.driverResponse.drivers;
+                shouldFetchMore = dataDriverChunk.moreDataAvailable;
+
+                var tabDrivers = dataDriverChunk.driverResponse.drivers;
                 lastDriverId = tabDrivers[tabDrivers.length - 1].tachoDriverIdentification.cardIssuingMemberState 
                                     .concat(tabDrivers[tabDrivers.length - 1].tachoDriverIdentification.driverIdentification);
 
@@ -58,7 +59,7 @@ export default class  {
 
             } while(shouldFetchMore);
 
-            return res;
+            return true;
             
         } catch (err) {
 
@@ -218,7 +219,7 @@ export default class  {
                         }
                         
                     }
-
+                    console.log('another one');
                     await this.sleep(10000);
 
                 } while(shouldFetchMore);
