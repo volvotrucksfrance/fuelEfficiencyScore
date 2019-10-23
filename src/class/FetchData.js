@@ -7,8 +7,6 @@ if(process.env.VOLVO_HTTP_PROXY != undefined) {
     rp = rp.defaults({'proxy':'http://proxy.vtec.volvo.se:8080'});
 }
 
-
-
 export default class  {
 
     constructor(login, password) {
@@ -58,10 +56,12 @@ export default class  {
 
             } while(shouldFetchMore);
 
+            console.log(res);
             return true;
             
         } catch (err) {
 
+            console.log(err);
             return false;
         }
 

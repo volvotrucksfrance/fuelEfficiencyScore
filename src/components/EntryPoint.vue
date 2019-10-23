@@ -69,7 +69,7 @@
                         v-model="menu1"
                         :close-on-content-click="false"
                         full-width
-                        max-width="290"
+                        max-width="400"
                         >
                         <template v-slot:activator="{ on }">
                             <v-text-field
@@ -92,7 +92,7 @@
                         v-model="menu2"
                         :close-on-content-click="false"
                         full-width
-                        max-width="290"
+                        max-width="400"
                         >
                         <template v-slot:activator="{ on }">
                             <v-text-field
@@ -177,12 +177,14 @@
                     rows-per-page-text="Lignes par page"
                 >
                 <template v-slot:items="props">
-                    <td>{{ props.item.name }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.score)}">{{ props.item.score }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.anticipation)}">{{ props.item.anticipation }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.engine)}">{{ props.item.engine }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.speed)}">{{ props.item.speed }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.idle)}">{{ props.item.idle }}</td>
+                    <tr @click="showScoreDetail(props.item.brutData)" >
+                        <td>{{ props.item.name }}</td>
+                        <td class="text-xs-right title" :style="{'color': getColor(props.item.score)}">{{ props.item.score }}</td>
+                        <td class="text-xs-right title" :style="{'color': getColor(props.item.anticipation)}">{{ props.item.anticipation }}</td>
+                        <td class="text-xs-right title" :style="{'color': getColor(props.item.engine)}">{{ props.item.engine }}</td>
+                        <td class="text-xs-right title" :style="{'color': getColor(props.item.speed)}">{{ props.item.speed }}</td>
+                        <td class="text-xs-right title" :style="{'color': getColor(props.item.idle)}">{{ props.item.idle }}</td>
+                    </tr>
                 </template>
                 <template v-slot:no-results>
                     <v-alert :value="true" color="error" icon="warning">
@@ -201,6 +203,9 @@
 
 
     </div>
+    <v-dialog v-model="dialog_score" max-width="290" >
+        <ScoreDetail />
+    </v-dialog>
     </v-app>
 </template>
 
@@ -210,6 +215,7 @@ import FetchData from '../class/FetchData.js';
 import FuelEfficiencyScore from '../class/FuelEfficiencyScore.js';
 import MergeData from '../class/MergeData.js';
 
+import ScoreDetail from './ScoreDetail.vue';
 import Settings from './Settings.vue';
 import moment from 'moment';
 import format from 'date-fns/format';
@@ -221,11 +227,13 @@ const DATE_FORMAT = "DD/MM/YYYY";
 export default {
     name: "EntryPoint",
     components: {
-        Settings
+        Settings,
+        ScoreDetail
     },
     data() {
 
         return {
+            dialog_score: false,
             loadText: this.$store.state.pourcentage,
             loadingTrucks: true,
             showLogin: true,
@@ -251,7 +259,8 @@ export default {
                 {
                     text: 'Nom',
                     align: 'left',
-                    value: 'name'
+                    value: 'name',
+                    width: "1%"
                 },
                 { text: 'Score', value: 'score' },
                 { text: 'Anticipation et freinage', value: 'anticipation' },
@@ -274,7 +283,12 @@ export default {
     },
 
     methods: {
+        showScoreDetail(data) {
 
+            console.log(data);
+            this.$store.commit('setScoreDetail', data);
+            this.dialog_score = true;
+        }, 
         convertFrenchFormat(date) {
 
             const myDate = moment(date, 'YYYY-MM-DD');
@@ -391,9 +405,10 @@ export default {
 
                     const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
                     
-                    const truckScore = myScore.getScore();
+                    var truckScore = myScore.getScore();
                     if(!isNaN(truckScore.score)) {
 
+                        truckScore.brutData = this.saveFetchedData[i];
                         truckScore.name = this.saveFetchedData[i].vin;
                         tabTrucksScore.push(truckScore);
                     }

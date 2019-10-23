@@ -31,6 +31,7 @@
     const store = new Vuex.Store({
         debug: true,
         state: {
+          scoreDetail: null,
           dialog: null,
           config: JSON.parse(localStorage.getItem('config')) || 
             defaultConfig,
@@ -39,6 +40,10 @@
           pourcentage: '0%'
         },
         mutations: {
+          setScoreDetail(state, data) {
+            
+            state.scoreDetail = data;
+          },
           setPourcentage(state, perc) {
             
             state.pourcentage = perc;
