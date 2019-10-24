@@ -11,7 +11,7 @@
         <v-card-text>
             <div>
                 <div class="title">
-                    <v-icon>speed</v-icon>
+                    <Pedal/>
                     <span>Anticipation et freinage: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.score.anticipation)}">{{roundNumber(this.$store.state.scoreDetail.score.anticipation)}}</span>
                 </div>
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <div class="title">
-                    <v-icon>speed</v-icon>
+                    <Engine/>
                     <span>Moteur et boite de vitesse: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.score.engine)}">{{roundNumber(this.$store.state.scoreDetail.score.engine)}}</span>
                 </div>
@@ -49,7 +49,7 @@
             </div>
             <div>
                 <div class="title">
-                    <v-icon>speed</v-icon>
+                    <Speed/>
                     <span>Adaptation de la vitesse: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.score.speed)}">{{roundNumber(this.$store.state.scoreDetail.score.speed)}}</span>
                 </div>
@@ -62,7 +62,7 @@
             </div>
             <div>
                 <div class="title">
-                    <i class="fas fa-truck"></i>
+                    <Truck/>
                     <span>A l'arrêt: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.score.idle)}">{{roundNumber(this.$store.state.scoreDetail.score.idle)}}</span>
                 </div>
@@ -78,8 +78,18 @@
 
 <script>
 
-export default {
+import Pedal from '../img_component/Pedal.vue';
+import Engine from '../img_component/Engine.vue';
+import Speed from '../img_component/Speed.vue';
+import Truck from '../img_component/Truck.vue';
 
+export default {
+    components: {
+        Pedal,
+        Engine,
+        Speed,
+        Truck
+    },
     methods: {
 
         roundNumber(a) {
