@@ -105,7 +105,7 @@
                             ></v-text-field>
                             <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.overrev"
-                                label="Rapport supérieur"
+                                label="Overrev"
                                 @input="verifEngine()"
                             ></v-text-field>
                             <v-text-field

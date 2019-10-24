@@ -128,7 +128,9 @@ export default class  {
 
                 do {
 
-                    store.commit('setPourcentage', this.dateToPourcentage(dateDebut, tmpStartTime, dateFin));
+                    const perc = this.dateToPourcentage(dateDebut, tmpStartTime, dateFin);
+
+                    store.commit('setPourcentage', `${perc}%`);
                     var tabData = await rp({
                         method: 'GET',
                         url: this.apiUrl + 'vehicle/' + endUrl,
@@ -146,7 +148,7 @@ export default class  {
                             additionalContent: "VOLVOGROUPACCUMULATED",
                             datetype: 'created',
                             lastVin: lastVin,
-                            triggerFilter: 'TIMER,DRIVER_LOGIN,DRIVER_LOGOUT,IGNITION_ON,IGNITION_OFF'
+                            triggerFilter: this.optimalTriggerFilter(perc)
                         }
                     });
                     const data = JSON.parse(tabData);
@@ -180,6 +182,7 @@ export default class  {
                 } while(shouldFetchMore);
             }
 
+
             return brutData;
 
         } catch (err) {
@@ -190,11 +193,22 @@ export default class  {
     
     }
 
+    optimalTriggerFilter(perc) {
+
+        if(perc < 25 || perc > 75) {
+
+            return;
+        } else {
+
+            return 'IGNITION_ON,IGNITION_OFF,DRIVER_LOGIN,DRIVER_LOGOUT';
+        }
+    }
+
     dateToPourcentage(start, a, end) {
 
         var res =  start == new Date(a) ? 0 : ((new Date(a) - start)/(end - start)*100).toFixed(1);
 
-        return `${res}%`;
+        return res;
     }
 
     _getAcceptHeader(dataType) {

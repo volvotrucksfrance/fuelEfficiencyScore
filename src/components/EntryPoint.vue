@@ -203,7 +203,7 @@
 
 
     </div>
-    <v-dialog v-model="dialog_score" max-width="290" >
+    <v-dialog v-model="dialog_score" max-width="400" >
         <ScoreDetail />
     </v-dialog>
     </v-app>

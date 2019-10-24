@@ -4,7 +4,64 @@
         <v-card-title class="headline">Score d'efficacité énergétique</v-card-title>
 
         <v-card-text>
-          {{roundNumber(this.$store.state.scoreDetail.auto)}}
+            <div>
+                <div class="title">
+                    <v-icon>speed</v-icon>
+                    <span>Anticipation et freinage</span>
+                </div>
+                <div class="icon_margin">
+                    <span>- Roue libre: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.coasting)}">{{roundNumber(this.$store.state.scoreDetail.coasting)}}</span><br>
+                    <span>- Freinage: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.ratioFreinage)}">{{roundNumber(this.$store.state.scoreDetail.ratioFreinage)}}</span>
+                </div>
+            </div>
+            <div>
+                <div class="title">
+                    <v-icon>speed</v-icon>
+                    <span>Moteur et boite de vitesse</span>
+                </div>
+                <div class="icon_margin">
+                    <span>- Mode automatique: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.auto)}">{{roundNumber(this.$store.state.scoreDetail.auto)}}</span><br>
+                    <span>- Mode manuel: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.manual)}">{{roundNumber(this.$store.state.scoreDetail.manual)}}</span><br>
+                    <span>- Mode puissance: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.power)}">{{roundNumber(this.$store.state.scoreDetail.power)}}</span><br>
+                    <span>- Rapport supérieur: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.topGear)}">{{roundNumber(this.$store.state.scoreDetail.topGear)}}</span><br>
+                    <span>- En mode économique: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.inEco)}">{{roundNumber(this.$store.state.scoreDetail.inEco)}}</span><br>
+                    <span>- Au-delà du mode économique: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.outEco)}">{{roundNumber(this.$store.state.scoreDetail.outEco)}}</span><br>
+                    <span>- Overrev: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.overrev)}">{{roundNumber(this.$store.state.scoreDetail.overrev)}}</span><br>
+                    <span>- Surcharge moteur: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.engineload)}">{{roundNumber(this.$store.state.scoreDetail.engineload)}}</span>
+                </div>
+            </div>
+            <div>
+                <div class="title">
+                    <v-icon>speed</v-icon>
+                    <span>Adaptation de la vitesse</span>
+                </div>
+                <div class="icon_margin">
+                    <span>- Survitesse: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.overspeed)}">{{roundNumber(this.$store.state.scoreDetail.overspeed)}}</span><br>
+                    <span>- Régulateur: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.cruise)}">{{roundNumber(this.$store.state.scoreDetail.cruise)}}</span>
+                </div>
+            </div>
+            <div>
+                <div class="title">
+                    <v-icon>speed</v-icon>
+                    <span>A l'arrêt</span>
+                </div>
+                <div class="icon_margin">
+                    <span>- Ralenti: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.idling)}">{{roundNumber(this.$store.state.scoreDetail.idling)}}</span><br>
+                </div>
+            </div>
         </v-card-text>
     </v-card>
 </template>
@@ -19,6 +76,20 @@ export default {
         roundNumber(a) {
 
             return a.toFixed(1);
+        },
+
+        getColor(perc) {
+
+            if(perc <= 59) {
+
+                return "#BB0B0B";//rouge
+            } else if(perc <= 79) {
+
+                return "#FFCC00";//yellow
+            } else if(perc <= 100) {
+
+                return "#32CD32";//green
+            }
         }
     },
     created() {
@@ -34,5 +105,9 @@ export default {
 </script>
 
 <style>
+.icon_margin {
 
+    margin-top: 10px;
+    margin-left: 27px;
+}
 </style>
