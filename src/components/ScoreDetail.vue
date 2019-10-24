@@ -4,7 +4,7 @@
         <v-card-title class="headline">
             <div>
                 Score d'efficacité énergétique<br>
-                <span :style="{padding: '0 5px 0 5px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score.score)}">  {{this.$store.state.scoreDetail.score.score}}  </span>
+                <span class="display-3" :style="{padding: '0 5px 0 5px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score.score)}">  {{this.$store.state.scoreDetail.score.score}}  </span>
             </div>
         </v-card-title>
 
@@ -127,8 +127,7 @@ export default {
 <style>
 .icon_margin {
 
-    margin-bottom: 10px;
     margin-top: 10px;
-    margin-left: 27px;
+    margin-left: 35px;
 }
 </style>

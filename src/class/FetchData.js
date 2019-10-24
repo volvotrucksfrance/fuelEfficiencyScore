@@ -77,6 +77,9 @@ export default class  {
         dateFin.setHours(dateFin.getHours() + 22);
         dateFin.setSeconds(dateFin.getSeconds() + 1);
 
+        const realStart = dateDebut;
+        const realEnd = dateFin;
+
         var listDate = [];
 
         while(dateDebut.addDays(14) < dateFin) {
@@ -128,7 +131,7 @@ export default class  {
 
                 do {
 
-                    const perc = this.dateToPourcentage(dateDebut, tmpStartTime, dateFin);
+                    const perc = this.dateToPourcentage(realStart, tmpStartTime, realEnd);
 
                     store.commit('setPourcentage', `${perc}%`);
                     var tabData = await rp({
@@ -182,7 +185,7 @@ export default class  {
                 } while(shouldFetchMore);
             }
 
-
+            console.log(brutData);
             return brutData;
 
         } catch (err) {
@@ -207,7 +210,6 @@ export default class  {
     dateToPourcentage(start, a, end) {
 
         var res =  start == new Date(a) ? 0 : ((new Date(a) - start)/(end - start)*100).toFixed(1);
-
         return res;
     }
 
