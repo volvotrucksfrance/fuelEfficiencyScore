@@ -409,6 +409,7 @@ export default {
                     if(!isNaN(truckScore.score)) {
 
                         truckScore.brutData = this.saveFetchedData[i];
+                        truckScore.brutData.score = truckScore;
                         truckScore.name = this.saveFetchedData[i].vin;
                         tabTrucksScore.push(truckScore);
                     }
@@ -448,9 +449,11 @@ export default {
 
                 const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
                 
-                const truckScore = myScore.getScore();
+                var truckScore = myScore.getScore();
                 if(!isNaN(truckScore.score)) {
 
+                    truckScore.brutData = this.saveFetchedData[i];
+                    truckScore.brutData.score = truckScore;
                     truckScore.name = this.saveFetchedData[i].vin;
                     tabTrucksScore.push(truckScore);
                 }

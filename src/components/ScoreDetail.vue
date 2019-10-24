@@ -1,13 +1,19 @@
 <template>
     <v-card outlined>
         <!-- scoreDetail{{this.$store.state.scoreDetail.auto}} -->
-        <v-card-title class="headline">Score d'efficacité énergétique</v-card-title>
+        <v-card-title class="headline">
+            <div>
+                Score d'efficacité énergétique<br>
+                <span :style="{padding: '0 5px 0 5px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score.score)}">  {{this.$store.state.scoreDetail.score.score}}  </span>
+            </div>
+        </v-card-title>
 
         <v-card-text>
             <div>
                 <div class="title">
                     <v-icon>speed</v-icon>
-                    <span>Anticipation et freinage</span>
+                    <span>Anticipation et freinage: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.score.anticipation)}">{{roundNumber(this.$store.state.scoreDetail.score.anticipation)}}</span>
                 </div>
                 <div class="icon_margin">
                     <span>- Roue libre: </span>
@@ -19,7 +25,8 @@
             <div>
                 <div class="title">
                     <v-icon>speed</v-icon>
-                    <span>Moteur et boite de vitesse</span>
+                    <span>Moteur et boite de vitesse: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.score.engine)}">{{roundNumber(this.$store.state.scoreDetail.score.engine)}}</span>
                 </div>
                 <div class="icon_margin">
                     <span>- Mode automatique: </span>
@@ -43,7 +50,8 @@
             <div>
                 <div class="title">
                     <v-icon>speed</v-icon>
-                    <span>Adaptation de la vitesse</span>
+                    <span>Adaptation de la vitesse: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.score.speed)}">{{roundNumber(this.$store.state.scoreDetail.score.speed)}}</span>
                 </div>
                 <div class="icon_margin">
                     <span>- Survitesse: </span>
@@ -54,8 +62,9 @@
             </div>
             <div>
                 <div class="title">
-                    <v-icon>speed</v-icon>
-                    <span>A l'arrêt</span>
+                    <i class="fas fa-truck"></i>
+                    <span>A l'arrêt: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.score.idle)}">{{roundNumber(this.$store.state.scoreDetail.score.idle)}}</span>
                 </div>
                 <div class="icon_margin">
                     <span>- Ralenti: </span>
@@ -75,10 +84,11 @@ export default {
 
         roundNumber(a) {
 
-            return a.toFixed(1);
+            return Number(a).toFixed(1);
         },
 
         getColor(perc) {
+            perc = Number(perc);
 
             if(perc <= 59) {
 
@@ -107,6 +117,7 @@ export default {
 <style>
 .icon_margin {
 
+    margin-bottom: 10px;
     margin-top: 10px;
     margin-left: 27px;
 }
