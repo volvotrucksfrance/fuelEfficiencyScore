@@ -408,7 +408,7 @@ export default {
                     var truckScore = myScore.getScore();
                     if(!isNaN(truckScore.score)) {
 
-                        truckScore.brutData = this.saveFetchedData[i];
+                        truckScore.brutData = myScore.getFesScore();
                         truckScore.brutData.score = truckScore;
                         truckScore.name = this.saveFetchedData[i].vin;
                         tabTrucksScore.push(truckScore);
@@ -452,7 +452,7 @@ export default {
                 var truckScore = myScore.getScore();
                 if(!isNaN(truckScore.score)) {
 
-                    truckScore.brutData = this.saveFetchedData[i];
+                    truckScore.brutData = myScore.getFesScore();
                     truckScore.brutData.score = truckScore;
                     truckScore.name = this.saveFetchedData[i].vin;
                     tabTrucksScore.push(truckScore);

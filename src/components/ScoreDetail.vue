@@ -19,7 +19,7 @@
                     <span>- Roue libre: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.coasting)}">{{roundNumber(this.$store.state.scoreDetail.coasting)}}</span><br>
                     <span>- Freinage: </span>
-                    <span :style="{'color': getColor(this.$store.state.scoreDetail.ratioFreinage)}">{{roundNumber(this.$store.state.scoreDetail.ratioFreinage)}}</span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.braking)}">{{roundNumber(this.$store.state.scoreDetail.braking)}}</span>
                 </div>
             </div>
             <div>
@@ -30,13 +30,13 @@
                 </div>
                 <div class="icon_margin">
                     <span>- Mode automatique: </span>
-                    <span :style="{'color': getColor(this.$store.state.scoreDetail.auto)}">{{roundNumber(this.$store.state.scoreDetail.auto)}}</span><br>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.i_shift_a)}">{{roundNumber(this.$store.state.scoreDetail.i_shift_a)}}</span><br>
                     <span>- Mode manuel: </span>
-                    <span :style="{'color': getColor(this.$store.state.scoreDetail.manual)}">{{roundNumber(this.$store.state.scoreDetail.manual)}}</span><br>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.i_shift_m)}">{{roundNumber(this.$store.state.scoreDetail.i_shift_m)}}</span><br>
                     <span>- Mode puissance: </span>
-                    <span :style="{'color': getColor(this.$store.state.scoreDetail.power)}">{{roundNumber(this.$store.state.scoreDetail.power)}}</span><br>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.i_shift_p)}">{{roundNumber(this.$store.state.scoreDetail.i_shift_p)}}</span><br>
                     <span>- Rapport supérieur: </span>
-                    <span :style="{'color': getColor(this.$store.state.scoreDetail.topGear)}">{{roundNumber(this.$store.state.scoreDetail.topGear)}}</span><br>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.topgear)}">{{roundNumber(this.$store.state.scoreDetail.topgear)}}</span><br>
                     <span>- En mode économique: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.inEco)}">{{roundNumber(this.$store.state.scoreDetail.inEco)}}</span><br>
                     <span>- Au-delà du mode économique: </span>
