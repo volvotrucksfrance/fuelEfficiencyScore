@@ -41,9 +41,9 @@
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.inEco)}">{{roundNumber(this.$store.state.scoreDetail.inEco)}}</span><br>
                     <span>- Au-delà du mode économique: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.outEco)}">{{roundNumber(this.$store.state.scoreDetail.outEco)}}</span><br>
-                    <span>- Overrev: </span>
-                    <span :style="{'color': getColor(this.$store.state.scoreDetail.overrev)}">{{roundNumber(this.$store.state.scoreDetail.overrev)}}</span><br>
                     <span>- Surcharge moteur: </span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.overrev)}">{{roundNumber(this.$store.state.scoreDetail.overrev)}}</span><br>
+                    <span>- Charge moteur: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.engineload)}">{{roundNumber(this.$store.state.scoreDetail.engineload)}}</span>
                 </div>
             </div>

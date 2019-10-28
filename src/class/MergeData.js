@@ -30,13 +30,18 @@ export default class MergeData {
 
             if(dist != NaN && time != NaN) {
 
+                const auto = tmpData.transmissionModeSeconds[0].value;
+                const manual = tmpData.transmissionModeSeconds[1].value;
+                const power = tmpData.transmissionModeSeconds[2].value;
+                const ishiftTotal = auto + manual + power;
+
             formatData.push({
                 coasting: (tmpData.coasting.meters/(dist-cruiseDist))*100,
                 ratioFreinage: tmpData.brakeCount
                                 /tmpData.stopCount,
-                auto: (tmpData.transmissionModeSeconds[0].value/time)*100,
-                manual: (tmpData.transmissionModeSeconds[1].value/time)*100,
-                power: (tmpData.transmissionModeSeconds[2].value/time)*100,
+                auto: (auto/ishiftTotal)*100,
+                manual: (manual/ishiftTotal)*100,
+                power: (power/ishiftTotal)*100,
                 topGear: (tmpData.topGear.meters/dist)*100,
                 inEco: (tmpData.engineWithinGreenArea.meters/dist)*100,
                 outEco: (tmpData.engineOutOfGreenArea.meters/dist)*100,
@@ -44,7 +49,9 @@ export default class MergeData {
                 engineload: (tmpData.engineOverload.meters/dist)*100,
                 overspeed: (tmpData.roadOverspeed.meters/dist)*100,
                 cruise: (tmpData.cruise.meters/dist)*100,
-                idling: (tmpData.idle/dist)*100,
+                idling: (tmpData.idle/time)*100,
+                time: time,
+                dist: dist,
                 vin: vin
             });
             }
@@ -112,7 +119,7 @@ export default class MergeData {
         const aVolvoData =  a.accumulatedData.volvoGroupAccumulated;
 
         return {
-            "idle": this.makeDiff(b.accumulatedData.durationWheelbaseSpeedOverZero,  a.accumulatedData.durationWheelbaseSpeedOverZero),
+            "idle": this.makeDiff(b.accumulatedData.durationWheelbaseSpeedZero, a.accumulatedData.durationWheelbaseSpeedZero),
             "time": this.makeDiff(b.totalEngineHours*60*60,  a.totalEngineHours*60*60),
             "distance": this.makeDiff(b.hrTotalVehicleDistance, a.hrTotalVehicleDistance),
             "cruise": {
