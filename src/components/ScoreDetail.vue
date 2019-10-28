@@ -4,7 +4,7 @@
         <v-card-title class="headline">
             <div>
                 Score d'efficacité énergétique<br>
-                <span class="display-3" :style="{padding: '0 5px 0 5px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score.score)}">  {{this.$store.state.scoreDetail.score.score}}  </span>
+                <span class="display-3" :style="{padding: '0 7px 0 7px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score.score)}">  {{this.$store.state.scoreDetail.score.score}}  </span>
             </div>
         </v-card-title>
 

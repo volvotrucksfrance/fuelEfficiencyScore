@@ -26,11 +26,12 @@ export default class MergeData {
             const tmpData = data[vin];
             const dist = tmpData.distance;
             const time = tmpData.time;
+            const cruiseDist = tmpData.cruise.meters;
 
             if(dist != NaN && time != NaN) {
 
             formatData.push({
-                coasting: (tmpData.coasting.meters/dist)*100,
+                coasting: (tmpData.coasting.meters/(dist-cruiseDist))*100,
                 ratioFreinage: tmpData.brakeCount
                                 /tmpData.stopCount,
                 auto: (tmpData.transmissionModeSeconds[0].value/time)*100,

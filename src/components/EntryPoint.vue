@@ -400,6 +400,7 @@ export default {
                 const myMergeData = new MergeData();
                 myMergeData.byTrucks(this.allData);
                 this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
+                                
                 var tabTrucksScore = [];
                 for(var i in this.saveFetchedData) {
 
@@ -408,6 +409,7 @@ export default {
                     var truckScore = myScore.getScore();
                     if(!isNaN(truckScore.score)) {
 
+                        console.log(this.saveFetchedData[i].vin, this.saveFetchedData[i]);
                         truckScore.brutData = myScore.getFesScore();
                         truckScore.brutData.score = truckScore;
                         truckScore.name = this.saveFetchedData[i].vin;
