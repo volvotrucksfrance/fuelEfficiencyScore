@@ -262,11 +262,11 @@ export default {
                     value: 'name',
                     width: "1%"
                 },
-                { text: 'Score', value: 'score' },
-                { text: 'Anticipation et freinage', value: 'anticipation' },
-                { text: 'Moteur et boite de vitesse', value: 'engine' },
-                { text: 'Adaptation de vitesse', value: 'speed' },
-                { text: 'Ralenti', value: 'idle' }
+                { text: 'Score', value: 'score', width: "1" },
+                { text: 'Anticipation et freinage', value: 'anticipation', width: "1" },
+                { text: 'Moteur et boite de vitesse', value: 'engine', width: "1" },
+                { text: 'Adaptation de vitesse', value: 'speed', width: "1" },
+                { text: 'Ralenti', value: 'idle', width: "1" }
             ],
             trucksScore: [
 
