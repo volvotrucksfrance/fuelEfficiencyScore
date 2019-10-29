@@ -35,25 +35,49 @@ export default class MergeData {
                 const power = tmpData.transmissionModeSeconds[2].value;
                 const ishiftTotal = auto + manual + power;
 
-            formatData.push({
-                coasting: (tmpData.coasting.meters/(dist-cruiseDist))*100,
-                ratioFreinage: tmpData.brakeCount
-                                /tmpData.stopCount,
-                auto: (auto/ishiftTotal)*100,
-                manual: (manual/ishiftTotal)*100,
-                power: (power/ishiftTotal)*100,
-                topGear: (tmpData.topGear.meters/dist)*100,
-                inEco: (tmpData.engineWithinGreenArea.meters/dist)*100,
-                outEco: (tmpData.engineOutOfGreenArea.meters/dist)*100,
-                overrev: (tmpData.engineOverrev.meters/dist)*100,
-                engineload: (tmpData.engineOverload.meters/dist)*100,
-                overspeed: (tmpData.roadOverspeed.meters/dist)*100,
-                cruise: (tmpData.cruise.meters/dist)*100,
-                idling: (tmpData.idle/time)*100,
-                time: time,
-                dist: dist,
-                vin: vin
-            });
+                /* formatData.push({
+                    coasting: (tmpData.coasting.meters/(dist-cruiseDist))*100,
+                    ratioFreinage: tmpData.brakeCount
+                                    /tmpData.stopCount,
+                    auto: (auto/ishiftTotal)*100,
+                    manual: (manual/ishiftTotal)*100,
+                    power: (power/ishiftTotal)*100,
+                    topGear: (tmpData.topGear.seconds/time)*100,
+                    inEco: (tmpData.engineWithinGreenArea.seconds/time)*100,
+                    outEco: (tmpData.engineOutOfGreenArea.seconds/time)*100,
+                    overrev: (tmpData.engineOverrev.seconds/time)*100,
+                    engineload: (tmpData.engineOverload.seconds/time)*100,
+                    overspeed: (tmpData.roadOverspeed.seconds/time)*100,
+                    cruise: (tmpData.cruise.seconds/time)*100,
+                    idling: (tmpData.idle/time)*100,
+                    time: time,
+                    dist: dist,
+                    vin: vin,
+                    unit: '% distance'
+                }); */
+
+                formatData.push({
+                    coasting: (tmpData.coasting.meters/(dist-cruiseDist))*100,
+                    freinage: tmpData.brakeCount,
+                    arret: tmpData.stopCount,
+                    ratioFreinage: tmpData.brakeCount
+                                    /tmpData.stopCount,
+                    auto: (auto/ishiftTotal)*100,
+                    manual: (manual/ishiftTotal)*100,
+                    power: (power/ishiftTotal)*100,
+                    topGear: (tmpData.topGear.seconds/time)*100,
+                    inEco: (tmpData.engineWithinGreenArea.seconds/time)*100,
+                    outEco: (tmpData.engineOutOfGreenArea.seconds/time)*100,
+                    overrev: (tmpData.engineOverrev.seconds/time)*100,
+                    engineload: (tmpData.engineOverload.seconds/time)*100,
+                    overspeed: (tmpData.roadOverspeed.seconds/time)*100,
+                    cruise: (tmpData.cruise.seconds/time)*100,
+                    idling: (tmpData.idle/time)*100,
+                    time: time,
+                    dist: dist,
+                    vin: vin,
+                    unit: '% temps'
+                });
             }
         }
 

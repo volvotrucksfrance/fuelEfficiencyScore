@@ -409,9 +409,9 @@ export default {
                     var truckScore = myScore.getScore();
                     if(!isNaN(truckScore.score)) {
 
-                        console.log(this.saveFetchedData[i].vin, this.saveFetchedData[i]);
                         truckScore.brutData = myScore.getFesScore();
                         truckScore.brutData.score = truckScore;
+                        truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
                         truckScore.name = this.saveFetchedData[i].vin;
                         tabTrucksScore.push(truckScore);
                     }
@@ -456,6 +456,7 @@ export default {
 
                     truckScore.brutData = myScore.getFesScore();
                     truckScore.brutData.score = truckScore;
+                    truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
                     truckScore.name = this.saveFetchedData[i].vin;
                     tabTrucksScore.push(truckScore);
                 }
