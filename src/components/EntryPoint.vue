@@ -475,24 +475,20 @@ export default {
     width: 100%;
     height: 1000px;
 }
-
 .login_btn {
 
     padding: 0;
     margin: 0;
     width: 100%;
 }
-
 .logout_btn {
 
     float: right;
 }
-
 .showDialog {
 
     float: right;
 }
-
 .fade-enter-active, .fade-leave-active {
 
     transition: opacity .5s;
@@ -501,7 +497,6 @@ export default {
 
     opacity: 0;
 }
-
 .center_body {
 
     margin: auto;
@@ -512,5 +507,4 @@ export default {
 
     margin-top: 20vh;
 }
-
 </style>

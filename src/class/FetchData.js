@@ -191,6 +191,7 @@ export default class  {
         } catch (err) {
 
             console.log(err);
+            store.commit('setPourcentage', 'Une erreur est survenue !');
             return err;
         }
     

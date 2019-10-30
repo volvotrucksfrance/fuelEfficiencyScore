@@ -37,6 +37,8 @@ export default class MergeData {
 
                 /* formatData.push({
                     coasting: (tmpData.coasting.meters/(dist-cruiseDist))*100,
+                    freinage: tmpData.brakeCount,
+                    arret: tmpData.stopCount,
                     ratioFreinage: tmpData.brakeCount
                                     /tmpData.stopCount,
                     auto: (auto/ishiftTotal)*100,
