@@ -429,6 +429,27 @@ export default {
             window.scrollTo(0, 0);
             this.showScores = false;
             this.showDate = true;
+        },
+
+        updateScores() {
+
+            this.loadText = this.$store.state.pourcentage;
+            this.loadingTrucks = false;
+            var tabTrucksScore = [];
+            for(var i in this.saveFetchedData) {
+                const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
+                
+                var truckScore = myScore.getScore();
+                if(!isNaN(truckScore.score)) {
+                    truckScore.brutData = myScore.getFesScore();
+                    truckScore.brutData.score = truckScore;
+                    truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
+                    truckScore.name = this.saveFetchedData[i].vin;
+                    tabTrucksScore.push(truckScore);
+                }
+                
+            }
+            this.trucksScore = tabTrucksScore;
         }
     },
     computed: {
@@ -445,24 +466,10 @@ export default {
     watch: {
         dialog: function(e) {
 
-            window.scrollTo(0, 0);
-            var tabTrucksScore = [];
-            for(var i in this.saveFetchedData) {
-
-                const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
-                
-                var truckScore = myScore.getScore();
-                if(!isNaN(truckScore.score)) {
-
-                    truckScore.brutData = myScore.getFesScore();
-                    truckScore.brutData.score = truckScore;
-                    truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
-                    truckScore.name = this.saveFetchedData[i].vin;
-                    tabTrucksScore.push(truckScore);
-                }
-                
-            }
-            this.trucksScore = tabTrucksScore;
+            this.loadText = 'Chargement en cours...';
+            this.loadingTrucks = true;
+            this.trucksScore = [];
+            window.setTimeout(this.updateScores, 1000);
         }
     }
 }

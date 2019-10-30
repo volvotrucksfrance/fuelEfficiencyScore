@@ -12,6 +12,7 @@
             </v-toolbar-items>
         </v-toolbar>
 
+    <v-expansion-panels accordion>
         <v-expansion-panel
             expand
             focusable
@@ -200,6 +201,7 @@
 
             </v-expansion-panel-content>
         </v-expansion-panel>
+    </v-expansion-panels>
 
         <v-footer fixed>
             <v-layout justify-center class="display-1" :class="error_total_style">
