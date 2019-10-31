@@ -74,7 +74,7 @@
                 <v-card class="grey lighten-3">
 
                     <v-container class="field_settings">
-                        <v-text-field
+                            <v-text-field
                                 v-model="state.config.engine_and_gear_utilisation.i_shift_auto"
                                 label="Mode automatique"
                                 @input="verifEngine()"

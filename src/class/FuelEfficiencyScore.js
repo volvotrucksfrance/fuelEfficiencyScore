@@ -8,12 +8,31 @@ export default class FuelEfficiencyScore {
         this.data = data;
     }
 
-    getMaxBetweenVal(tab, value) {
+    getDecimal(n) {
+
+        return n - Math.floor(n);
+    }
+
+    getInterpolate(tab, value) {
 
         const above = tab[Math.ceil(value)];
         const lower = tab[Math.trunc(value)];
+        const diff = Math.abs(above - lower);
+        const min = Math.min(above, lower);
+        
 
-        return Math.max(above, lower);
+        return this.roundToMax(min + this.getDecimal(value)*diff, 100);
+    }
+
+    roundToMax(value, max) {
+
+        if(value > max) {
+
+            return max;
+        } else {
+
+            return value;
+        }
     }
 
     getFesScore() {
@@ -21,19 +40,19 @@ export default class FuelEfficiencyScore {
         let stats = this.data;
 
         const fes_score = {
-            coasting: this.getMaxBetweenVal(configMatrice.coasting, stats.coasting),
-            braking: this.getMaxBetweenVal(configMatrice.braking, stats.ratioFreinage),
-            i_shift_a: configMatrice.i_shift_auto[Math.ceil(stats.auto)],
-            i_shift_m: configMatrice.i_shift_manual[Math.ceil(stats.manual)],
-            i_shift_p: configMatrice.i_shift_power[Math.ceil(stats.power)],
-            topgear: configMatrice.topgear[Math.ceil(stats.topGear)],
-            inEco: configMatrice.inEco[Math.ceil(stats.inEco)],
-            outEco: configMatrice.outEco[Math.ceil(stats.outEco)],
-            overrev: configMatrice.overrev[Math.ceil(stats.overrev)],
-            engineload: configMatrice.engineload[Math.ceil(stats.engineload)],
-            overspeed: configMatrice.overspeed[Math.ceil(stats.overspeed)],
-            cruise: configMatrice.cruise[Math.ceil(stats.cruise)],
-            idling: configMatrice.idling[Math.ceil(stats.idling)],
+            coasting: this.getInterpolate(configMatrice.coasting, stats.coasting),
+            braking: this.getInterpolate(configMatrice.braking, stats.ratioFreinage),
+            i_shift_a: this.getInterpolate(configMatrice.i_shift_auto, stats.auto),
+            i_shift_m: this.getInterpolate(configMatrice.i_shift_manual, stats.manual),
+            i_shift_p: this.getInterpolate(configMatrice.i_shift_power, stats.power),
+            topgear: this.getInterpolate(configMatrice.topgear, stats.topGear),
+            inEco: this.getInterpolate(configMatrice.inEco, stats.inEco),
+            outEco: this.getInterpolate(configMatrice.outEco, stats.outEco),
+            overrev: this.getInterpolate(configMatrice.overrev, stats.overrev),
+            engineload: this.getInterpolate(configMatrice.engineload, stats.engineload),
+            overspeed: this.getInterpolate(configMatrice.overspeed, stats.overspeed),
+            cruise: this.getInterpolate(configMatrice.cruise, stats.cruise),
+            idling: this.getInterpolate(configMatrice.idling, stats.idling)
         };
 
         return fes_score;
