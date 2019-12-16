@@ -14,6 +14,32 @@ export default class  {
         this.login = login;
         this.password = password;
         this.apiUrl = "https://api.volvotrucks.com/";
+        this.gaidoUrl = "http://vtf.spv.gaido.fr/";
+        //this.gaidoUrl = "http://localhost:8083/";
+    }
+
+    async loginToGaido() {
+
+        try {
+            const user = await rp({
+                method: 'POST',
+                url: this.gaidoUrl + 'user',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({
+                    login: this.login,
+                    password: this.password
+                })
+            });
+            
+            return JSON.parse(user);
+
+        } catch(err) {
+
+            console.log(err);
+            return err;
+        }
     }
 
     async getDrivers()  {

@@ -233,6 +233,7 @@ export default {
     data() {
 
         return {
+            userData: null,
             dialog_score: false,
             loadText: this.$store.state.pourcentage,
             loadingTrucks: true,
@@ -314,18 +315,19 @@ export default {
             this.showLogin = true;
         },
         
-        async fetchDrivers() {
+        async loginGaido() {
 
             this.dataFetcher = new FetchData(this.login, this.password);
-            let tmpDrivers = await this.dataFetcher.getDrivers();
+            let tmpDrivers = await this.dataFetcher.loginToGaido();
 
+            this.userData = tmpDrivers;
             return tmpDrivers;
         },
 
         async tryCredentials() {
 
             this.isLogging = true;
-            this.showLogin = await this.fetchDrivers();
+            this.showLogin = await this.loginGaido();
 
             this.saveCredentials();
         },
@@ -388,39 +390,70 @@ export default {
                     text: 'Veuillez selectionner une date de debut et de fin'
                 });
             } else {
+                
+                const mostOldRecord = this.userData.oldRecord;
+                const mostRecentRecord = this.userData.recentRecord;
+                var isDebutToday = moment(this.dateDebut).isSame(new Date(), "day");
+                var isFinToday = moment(this.dateFin).isSame(new Date(), "day");
+                console.log(mostOldRecord, mostRecentRecord);
+                console.log(this.dateDebut, this.dateFin);
+                if(!isDebutToday && !isFinToday) {
+                    //on check les 2 dates dans la bonne range
+                    if(!moment(this.dateDebut).isBetween(mostOldRecord, mostRecentRecord, null, '[]') ||
+                        !moment(this.dateFin).isBetween(mostOldRecord, mostRecentRecord, null, '[]')) {
 
-                this.trucksScore = [];
-                this.loadingTrucks = true;
-                //this.loadText = this.$store.state.pourcentage;
-                this.$store.commit('setStartDate', this.dateDebut);
-                this.$store.commit('setStopDate', this.dateFin);
-                this.showDate = false;
-                this.showScores = true;  
-                this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin, this.$store, this);
-                const myMergeData = new MergeData();
-                myMergeData.byTrucks(this.allData);
-                this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
-                                
-                var tabTrucksScore = [];
-                for(var i in this.saveFetchedData) {
-
-                    const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
-                    
-                    var truckScore = myScore.getScore();
-                    if(!isNaN(truckScore.score)) {
-
-                        truckScore.brutData = myScore.getFesScore();
-                        truckScore.brutData.score = truckScore;
-                        truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
-                        truckScore.name = this.saveFetchedData[i].vin;
-                        tabTrucksScore.push(truckScore);
+                        return this.$notify({
+                                group: 'notif',
+                                title: 'Message',
+                                text: `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`
+                            });
                     }
                     
+                } else if(!isDebutToday && isFinToday) {
+                    //on check si debut dans la range
+                    if(!moment(this.dateDebut).isBetween(mostOldRecord, mostRecentRecord, null, '[]')) {
+
+                        return this.$notify({
+                                group: 'notif',
+                                title: 'Message',
+                                text: `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`
+                            });
+                    }
+
                 }
 
-                this.loadingTrucks = false;
-                this.trucksScore = tabTrucksScore;
-                this.loadText = "Pas de données"
+                    this.trucksScore = [];
+                    this.loadingTrucks = true;
+                    //this.loadText = this.$store.state.pourcentage;
+                    this.$store.commit('setStartDate', this.dateDebut);
+                    this.$store.commit('setStopDate', this.dateFin);
+                    this.showDate = false;
+                    this.showScores = true;  
+                    this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin, this.$store, this);
+                    const myMergeData = new MergeData();
+                    myMergeData.byTrucks(this.allData);
+                    this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
+                    console.log(this.saveFetchedData) ;
+                    var tabTrucksScore = [];
+                    for(var i in this.saveFetchedData) {
+
+                        const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
+                        
+                        var truckScore = myScore.getScore();
+                        if(!isNaN(truckScore.score)) {
+
+                            truckScore.brutData = myScore.getFesScore();
+                            truckScore.brutData.score = truckScore;
+                            truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
+                            truckScore.name = this.saveFetchedData[i].vin;
+                            tabTrucksScore.push(truckScore);
+                        }
+                        
+                    }
+
+                    this.loadingTrucks = false;
+                    this.trucksScore = tabTrucksScore;
+                    this.loadText = "Pas de données"
             }
         },
 

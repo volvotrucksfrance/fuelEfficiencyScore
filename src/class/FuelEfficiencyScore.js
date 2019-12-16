@@ -20,7 +20,6 @@ export default class FuelEfficiencyScore {
         const diff = Math.abs(above - lower);
         const min = Math.min(above, lower);
         
-
         return this.roundToMax(min + this.getDecimal(value)*diff, 100);
     }
 

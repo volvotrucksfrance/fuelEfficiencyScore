@@ -1,11 +1,15 @@
 export default class MergeData {
 
-    
-
     constructor() {
 
         this.mergedData = {};
         this.mergedDataTrucks = {};
+        this.mergedFleet = this.getTemplate();
+    }
+
+    getDataFleet() {
+
+        return this.mergedFleet;
     }
 
     getDataTrucks() {
@@ -107,7 +111,6 @@ export default class MergeData {
                 return a[property] - b[property];
             } else {
 
-                console.log(property);
                 return 0;
             }
             
@@ -121,7 +124,7 @@ export default class MergeData {
     makeDiffObj(a, b) {
  
         const bVolvoData = b.accumulatedData.volvoGroupAccumulated;
-        const aVolvoData =  a.accumulatedData.volvoGroupAccumulated;
+        const aVolvoData = a.accumulatedData.volvoGroupAccumulated;
 
         return {
             "fuel": this.makeDiff(b.engineTotalFuelUsed, a.engineTotalFuelUsed),
@@ -199,6 +202,198 @@ export default class MergeData {
                 "meters": this.makeDiff(bVolvoData.withoutCatalyst, aVolvoData.withoutCatalyst, 'meters')
             }
         }
+    }
+
+    makeSum(a, b, property, type) {
+
+        if(property == undefined) {
+
+            return a + b;
+
+        } else if(a != undefined && b != undefined && a[property] != undefined && b[property] != undefined) {
+
+            if(type == 'array' && a[property].value != undefined && b[property].value != undefined) {
+
+                return a[property].value + b[property].value;
+    
+            } else if(type != 'array') {
+
+                return a[property] + b[property];
+            } else {
+
+                return 0;
+            }
+            
+
+        } else {
+
+            return 0;
+        }
+    }
+
+    addToFleet(a) {
+
+        this.mergedFleet = {
+            "fuel": this.makeDiff(b.engineTotalFuelUsed, a.engineTotalFuelUsed),
+            "idle": this.makeDiff(b.accumulatedData.durationWheelbaseSpeedZero, a.accumulatedData.durationWheelbaseSpeedZero),
+            "time": this.makeDiff(b.totalEngineHours*60*60,  a.totalEngineHours*60*60),
+            "distance": this.makeDiff(b.hrTotalVehicleDistance, a.hrTotalVehicleDistance),
+            "cruise": {
+                "seconds": this.makeDiff(b.accumulatedData.durationCruiseControlActive, a.accumulatedData.durationCruiseControlActive),
+                "meters": this.makeDiff(b.accumulatedData.distanceCruiseControlActive, a.accumulatedData.distanceCruiseControlActive),
+            },
+            "brakeCount": this.makeDiff(bVolvoData.brakeCount, aVolvoData.brakeCount),
+            "coasting": {
+                "seconds": this.makeDiff(bVolvoData.coasting, aVolvoData.coasting, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.coasting, aVolvoData.coasting, 'meters')
+            },
+            "engineOverload": {
+                "seconds": this.makeDiff(bVolvoData.engineOverload, aVolvoData.engineOverload, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineOverload, aVolvoData.engineOverload, 'meters')
+            },
+            "engineOverrev": {
+                "seconds": this.makeDiff(bVolvoData.engineOverrev, aVolvoData.engineOverrev, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineOverrev, aVolvoData.engineOverrev, 'meters')
+            },
+            "engineWithinGreenArea": {
+                "seconds": this.makeDiff(bVolvoData.engineWithinGreenArea, aVolvoData.engineWithinGreenArea, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineWithinGreenArea, aVolvoData.engineWithinGreenArea, 'meters'),
+                "milliLitres": this.makeDiff(bVolvoData.engineWithinGreenArea, aVolvoData.engineWithinGreenArea, 'milliLitres')
+            },
+            "engineOutOfGreenArea": {
+                "seconds": this.makeDiff(bVolvoData.engineOutOfGreenArea, aVolvoData.engineOutOfGreenArea, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.engineOutOfGreenArea, aVolvoData.engineOutOfGreenArea, 'meters'),
+                "milliLitres": this.makeDiff(bVolvoData.engineOutOfGreenArea, aVolvoData.engineOutOfGreenArea, 'milliLitres')
+            },
+            "transmissionModeSeconds": [
+                {
+                    "label": "AUTO",
+                    "value": this.makeDiff(bVolvoData.transmissionModeSeconds, aVolvoData.transmissionModeSeconds, 0, 'array')
+                },
+                {
+                    "label": "MANUAL",
+                    "value": this.makeDiff(bVolvoData.transmissionModeSeconds, aVolvoData.transmissionModeSeconds, 1, 'array')
+                },
+                {
+                    "label": "POWER",
+                    "value": this.makeDiff(bVolvoData.transmissionModeSeconds, aVolvoData.transmissionModeSeconds, 2, 'array')
+                }
+            ],
+            "convoyWeightMeters": [
+                {
+                    "label": "LIGHT",
+                    "value": this.makeDiff(bVolvoData.convoyWeightMeters, aVolvoData.convoyWeightMeters, 0, 'array')
+                },
+                {
+                    "label": "MEDIUM",
+                    "value": this.makeDiff(bVolvoData.convoyWeightMeters, aVolvoData.convoyWeightMeters, 1, 'array')
+                },
+                {
+                    "label": "FULL",
+                    "value": this.makeDiff(bVolvoData.convoyWeightMeters, aVolvoData.convoyWeightMeters, 2, 'array')
+                }
+            ],
+            "roadOverspeed": {
+                "seconds": this.makeDiff(bVolvoData.roadOverspeed, aVolvoData.roadOverspeed, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.roadOverspeed, aVolvoData.roadOverspeed, 'meters'),
+                "milliLitres": this.makeDiff(bVolvoData.roadOverspeed, aVolvoData.roadOverspeed, 'milliLitres')
+            },
+            "stopCount": this.makeDiff(bVolvoData.stopCount, aVolvoData.stopCount),
+            "topGear": {
+                "seconds": this.makeDiff(bVolvoData.topGear, aVolvoData.topGear, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.topGear, aVolvoData.topGear, 'meters')
+            },
+            "engineTotalCatalystUsed": this.makeDiff(bVolvoData.engineTotalCatalystUsed, aVolvoData.engineTotalCatalystUsed),
+            "withoutCatalyst": {
+                "seconds": this.makeDiff(bVolvoData.withoutCatalyst, aVolvoData.withoutCatalyst, 'seconds'),
+                "meters": this.makeDiff(bVolvoData.withoutCatalyst, aVolvoData.withoutCatalyst, 'meters')
+            }
+        }
+    }
+
+    getTemplate() {
+
+        return {
+            "fuel": 0,
+            "idle": 0,
+            "time": 0,
+            "distance": 0,
+            "cruise": {
+                "seconds": 0,
+                "meters": 0,
+            },
+            "brakeCount": 0,
+            "coasting": {
+                "seconds": 0,
+                "meters": 0
+            },
+            "engineOverload": {
+                "seconds": 0,
+                "meters": 0
+            },
+            "engineOverrev": {
+                "seconds": 0,
+                "meters": 0
+            },
+            "engineWithinGreenArea": {
+                "seconds": 0,
+                "meters": 0,
+                "milliLitres": 0
+            },
+            "engineOutOfGreenArea": {
+                "seconds": 0,
+                "meters": 0,
+                "milliLitres": 0
+            },
+            "transmissionModeSeconds": [
+                {
+                    "label": "AUTO",
+                    "value": 0
+                },
+                {
+                    "label": "MANUAL",
+                    "value": 0
+                },
+                {
+                    "label": "POWER",
+                    "value": 0
+                }
+            ],
+            "convoyWeightMeters": [
+                {
+                    "label": "LIGHT",
+                    "value": 0
+                },
+                {
+                    "label": "MEDIUM",
+                    "value": 0
+                },
+                {
+                    "label": "FULL",
+                    "value": 0
+                }
+            ],
+            "roadOverspeed": {
+                "seconds": 0,
+                "meters": 0,
+                "milliLitres": 0
+            },
+            "stopCount": 0,
+            "topGear": {
+                "seconds": 0,
+                "meters": 0
+            },
+            "engineTotalCatalystUsed": 0,
+            "withoutCatalyst": {
+                "seconds": 0,
+                "meters": 0
+            }
+        }
+    }
+
+    makeSumObj(obj) {
+
+
     }
 
     byDriver(brut_data) {
