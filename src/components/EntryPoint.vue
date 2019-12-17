@@ -64,26 +64,30 @@
             <v-content style="margin-top: 50px;">
             <v-container bg grid-list-md text-xs-center>
                 <v-layout row wrap align-center>
+                    <v-flex xs12 lg12>
+                        <p>{{msgDate}}</p>
+                    </v-flex>
+                    
                     <v-flex xs6 lg6>
                         <v-menu
-                        v-model="menu1"
-                        :close-on-content-click="false"
-                        full-width
-                        max-width="400"
+                            v-model="menu1"
+                            :close-on-content-click="false"
+                            full-width
+                            max-width="400"
                         >
-                        <template v-slot:activator="{ on }">
-                            <v-text-field
-                            :value="computedDateFormattedMomentjs(dateDebut)"
-                            label="Date de debut"
-                            readonly
-                            v-on="on"
-                            ></v-text-field>
-                        </template>
-                        <v-date-picker
-                            v-model="dateDebut"
-                            @change="menu1 = false"
-                            locale="fr-fr"
-                        ></v-date-picker>
+                            <template v-slot:activator="{ on }">
+                                <v-text-field
+                                    :value="computedDateFormattedMomentjs(dateDebut)"
+                                    label="Date de debut"
+                                    readonly
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                v-model="dateDebut"
+                                @change="menu1 = false"
+                                locale="fr-fr"
+                            ></v-date-picker>
                         </v-menu>
                     </v-flex>
 
@@ -233,6 +237,7 @@ export default {
     data() {
 
         return {
+            msgDate: '',
             userData: null,
             dialog_score: false,
             loadText: this.$store.state.pourcentage,
@@ -320,6 +325,7 @@ export default {
             this.dataFetcher = new FetchData(this.login, this.password);
             let tmpDrivers = await this.dataFetcher.loginToGaido();
 
+            this.msgDate = `Données disponible entre le ${new Date(tmpDrivers.oldRecord).toLocaleDateString('fr-FR')} et le ${new Date().toLocaleDateString('fr-FR')}`;
             this.userData = tmpDrivers;
             return tmpDrivers;
         },
@@ -429,11 +435,13 @@ export default {
                     this.$store.commit('setStopDate', this.dateFin);
                     this.showDate = false;
                     this.showScores = true;  
-                    this.allData = await this.dataFetcher.getVehiclesData(this.dateDebut, this.dateFin, this.$store, this);
+                    this.allData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, this);
+                    console.log(this.allData);
                     const myMergeData = new MergeData();
                     myMergeData.byTrucks(this.allData);
+                    console.log(myMergeData.getDataTrucks());
                     this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
-                    console.log(this.saveFetchedData) ;
+                    console.log(this.saveFetchedData);
                     var tabTrucksScore = [];
                     for(var i in this.saveFetchedData) {
 

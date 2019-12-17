@@ -30,7 +30,7 @@ export default class MergeData {
             const tmpData = data[vin];
             const dist = tmpData.distance;
             const time = tmpData.time;
-            const fuel = tmpData.fuel;
+            const fuel = tmpData.fuel*1000;
             const cruiseDist = tmpData.cruise.meters;
 
             if(dist != NaN && time != NaN) {
@@ -50,11 +50,11 @@ export default class MergeData {
                     manual: (manual/ishiftTotal)*100,
                     power: (power/ishiftTotal)*100,
                     topGear: (tmpData.topGear.meters/dist)*100,
-                    inEco: (tmpData.engineWithinGreenArea.milliLitres/fuel)*100,
-                    outEco: (tmpData.engineOutOfGreenArea.milliLitres/fuel)*100,
+                    inEco: ((tmpData.engineWithinGreenArea.milliLitres)/fuel)*100,
+                    outEco: ((tmpData.engineOutOfGreenArea.milliLitres)/fuel)*100,
                     overrev: (tmpData.engineOverrev.seconds/time)*100,
                     engineload: (tmpData.engineOverload.meters/dist)*100,
-                    overspeed: (tmpData.roadOverspeed.milliLitres/fuel)*100,
+                    overspeed: ((tmpData.roadOverspeed.milliLitres)/fuel)*100,
                     cruise: (tmpData.cruise.meters/dist)*100,
                     idling: (tmpData.idle/time)*100,
                     time: time,

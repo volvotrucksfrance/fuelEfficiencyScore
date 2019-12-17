@@ -15,7 +15,6 @@ export default class  {
         this.password = password;
         this.apiUrl = "https://api.volvotrucks.com/";
         this.gaidoUrl = "http://vtf.spv.gaido.fr/";
-        //this.gaidoUrl = "http://localhost:8083/";
     }
 
     async loginToGaido() {
@@ -32,7 +31,7 @@ export default class  {
                     password: this.password
                 })
             });
-            
+
             return JSON.parse(user);
 
         } catch(err) {
@@ -93,6 +92,156 @@ export default class  {
 
     }
 
+    async getVehiclesDataGaido(dateDebut, dateFin, store) {
+
+        var isDebutToday = moment(dateDebut).isSame(new Date(), "day");
+        var isFinToday = moment(dateFin).isSame(new Date(), "day");
+
+        dateDebut = new Date(dateDebut);
+        dateFin = new Date(dateFin);
+
+        var brutData = {
+            debut : {
+
+            },
+            fin: {
+
+            }
+        };
+
+        //Si les 2 dates pas aujourd'hui alors utilise v2 du serv gaido
+        if(!isDebutToday && !isFinToday) {
+
+            try {
+
+                let allData = await rp({
+                    method: 'GET',
+                    url: this.gaidoUrl + 'api/v2/vehicle/vehiclestatuses',
+                    auth: {
+                        user: this.login,
+                        password: this.password
+                    },
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    qs: {
+                        starttime: dateDebut.toISOString(),
+                        stoptime: dateFin.toISOString()
+                    }
+                });
+
+                allData = JSON.parse(allData);
+   
+                for(var i = 0; i < allData.old.length - 1; i++) {
+
+                    brutData.debut[allData.old[i].vin] = allData.old[i];
+                }
+
+                for(var i in allData.recent) {
+
+                    brutData.fin[allData.recent[i].vin] = allData.recent[i];
+                }
+
+                return brutData;
+
+            } catch(err) {
+
+                console.log(err);
+            }
+        //on recup le debut sur gaido et la suite sur Volvo Connect
+        } else if(!isDebutToday && isFinToday) {
+
+            //debut data
+            let debutData = await rp({
+                method: 'GET',
+                url: this.gaidoUrl + 'api/vehicle/vehiclestatusesbydate',
+                auth: {
+                    user: this.login,
+                    password: this.password
+                },
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                qs: {
+                    starttime: dateDebut.toISOString()
+                }
+            });
+
+            debutData = JSON.parse(debutData);
+
+            for(var i = 0; i < debutData.length - 1; i++) {
+
+                brutData.debut[debutData[i].vin] = debutData[i];
+            }
+
+            const lastData = await this.getVehiclesDataLatest();
+            for(var i = 0; i < lastData.length - 1; i++) {
+
+                if(brutData.debut[lastData[i].vin] != undefined) {
+
+                    brutData.fin[lastData[i].vin] = lastData[i];
+                }
+
+            }
+
+            return brutData;
+
+        //on recup tout sur Volvo Connect
+        } else {
+
+            return await this.getVehiclesData(dateDebut, dateFin, store);
+        }
+
+    }
+
+    async getVehiclesDataLatest() {
+
+        try {
+
+            var listData = [];
+
+            const endUrl = 'vehiclestatuses';
+
+            var moreData = false;
+            var lastVin;
+            /* do { */
+
+                let latestData = await rp({
+                    method: 'GET',
+                    url: this.apiUrl + 'vehicle/' + endUrl,
+                    auth: {
+                        user: this.login,
+                        password: this.password
+                    },
+                    headers: {
+                        Accept: this._getAcceptHeader(endUrl)
+                    },
+                    qs: {
+                        latestOnly: true,
+                        lastVin: lastVin,
+                        additionalContent: 'VOLVOGROUPACCUMULATED',
+                        contentFilter: 'ACCUMULATED'
+                    }
+                });
+                latestData = JSON.parse(latestData);
+
+                const tabLength = latestData.vehicleStatusResponse.vehicleStatuses.length;
+                moreData = latestData.moreDataAvailable;
+                lastVin = latestData.vehicleStatusResponse.vehicleStatuses[tabLength - 1].vin;
+
+                //listData.push(latestData.vehicleStatusResponse.vehicleStatuses);
+
+            /* } while(moreData); */
+
+            return latestData.vehicleStatusResponse.vehicleStatuses;
+
+            
+        } catch(err) {
+
+            console.log(err);
+        }
+    }
+
 
     async getVehiclesData(dateDebut, dateFin, store, vue) {
 
@@ -130,15 +279,6 @@ export default class  {
 
             const endUrl = 'vehiclestatuses';
             var brutData = {
-                debut : {
-    
-                },
-                fin: {
-    
-                }
-            };
-
-            var brutDataDriver = {
                 debut : {
     
                 },
