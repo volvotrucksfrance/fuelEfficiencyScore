@@ -242,10 +242,10 @@ export default class  {
     async getVehiclesData(dateDebut, dateFin, store, vue) {
 
         dateDebut = new Date(dateDebut);
-        dateDebut.setHours(dateDebut.getHours() - 2);
+        dateDebut.setHours(dateDebut.getHours() - 1);
 
         dateFin = new Date(dateFin);
-        dateFin.setHours(dateFin.getHours() + 22);
+        dateFin.setHours(dateFin.getHours() + 23);
         dateFin.setSeconds(dateFin.getSeconds() + 1);
 
         const realStart = dateDebut;
@@ -312,8 +312,7 @@ export default class  {
                             contentFilter: "ACCUMULATED",
                             additionalContent: "VOLVOGROUPACCUMULATED",
                             datetype: 'created',
-                            lastVin: lastVin,
-                            triggerFilter: this.optimalTriggerFilter(perc)
+                            lastVin: lastVin
                         }
                     });
                     const data = JSON.parse(tabData);
