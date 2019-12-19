@@ -112,10 +112,6 @@ export default class  {
             try {
 
                 dateFin = dateFin.addDays(1);
-                console.log({
-                    starttime: dateDebut.toISOString(),
-                    stoptime: dateFin.toISOString()
-                });
                 let allData = await rp({
                     method: 'GET',
                     url: this.gaidoUrl + 'api/v2/vehicle/vehiclestatuses',
