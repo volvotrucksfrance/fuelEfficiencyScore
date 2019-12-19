@@ -380,6 +380,8 @@ export default {
 
         async getScore() {
 
+            this.dataFetcher = new FetchData(this.login, this.password);
+
             if(this.dateDebut > this.dateFin) {
 
                 return this.$notify({
