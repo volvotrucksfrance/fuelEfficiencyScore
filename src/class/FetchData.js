@@ -147,46 +147,51 @@ export default class  {
 
             } catch(err) {
 
-                console.log(err);
+                return false;
             }
         //on recup le debut sur gaido et la suite sur Volvo Connect
         } else if(!isDebutToday && isFinToday) {
 
-            //debut data
-            let debutData = await rp({
-                method: 'GET',
-                url: this.gaidoUrl + 'api/vehicle/vehiclestatusesbydate',
-                auth: {
-                    user: this.login,
-                    password: this.password
-                },
-                headers: {
-                    "Content-Type": 'application/json'
-                },
-                qs: {
-                    starttime: dateDebut.toISOString()
-                }
-            });
+            try {
+                //debut data
+                let debutData = await rp({
+                    method: 'GET',
+                    url: this.gaidoUrl + 'api/vehicle/vehiclestatusesbydate',
+                    auth: {
+                        user: this.login,
+                        password: this.password
+                    },
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    qs: {
+                        starttime: dateDebut.toISOString()
+                    }
+                });
 
-            debutData = JSON.parse(debutData);
+                debutData = JSON.parse(debutData);
 
-            for(var i = 0; i < debutData.length - 1; i++) {
+                for(var i = 0; i < debutData.length - 1; i++) {
 
-                brutData.debut[debutData[i].vin] = debutData[i];
-            }
-
-
-            const lastData = await this.getVehiclesDataLatest();
-            for(var i = 0; i < lastData.length - 1; i++) {
-
-                if(brutData.debut[lastData[i].vin] != undefined) {
-
-                    brutData.fin[lastData[i].vin] = lastData[i];
+                    brutData.debut[debutData[i].vin] = debutData[i];
                 }
 
-            }
 
-            return brutData;
+                const lastData = await this.getVehiclesDataLatest();
+                for(var i = 0; i < lastData.length - 1; i++) {
+
+                    if(brutData.debut[lastData[i].vin] != undefined) {
+
+                        brutData.fin[lastData[i].vin] = lastData[i];
+                    }
+
+                }
+
+                return brutData;
+            } catch(err) {
+
+                return false;
+            }
 
         //on recup tout sur Volvo Connect
         } else {
