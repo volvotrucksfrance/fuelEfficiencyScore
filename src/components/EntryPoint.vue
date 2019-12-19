@@ -291,7 +291,6 @@ export default {
     methods: {
         showScoreDetail(data) {
 
-            console.log(data);
             this.$store.commit('setScoreDetail', data);
             this.dialog_score = true;
         }, 
@@ -401,8 +400,6 @@ export default {
                 const mostRecentRecord = this.userData.recentRecord;
                 var isDebutToday = moment(this.dateDebut).isSame(new Date(), "day");
                 var isFinToday = moment(this.dateFin).isSame(new Date(), "day");
-                console.log(mostOldRecord, mostRecentRecord);
-                console.log(this.dateDebut, this.dateFin);
                 if(!isDebutToday && !isFinToday) {
                     //on check les 2 dates dans la bonne range
                     if(!moment(this.dateDebut).isBetween(mostOldRecord, mostRecentRecord, null, '[]') ||
@@ -436,12 +433,9 @@ export default {
                     this.showDate = false;
                     this.showScores = true;  
                     this.allData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, this);
-                    console.log(this.allData);
                     const myMergeData = new MergeData();
                     myMergeData.byTrucks(this.allData);
-                    console.log(myMergeData.getDataTrucks());
                     this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
-                    console.log(this.saveFetchedData);
                     var tabTrucksScore = [];
                     for(var i in this.saveFetchedData) {
 

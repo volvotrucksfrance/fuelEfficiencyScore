@@ -15,6 +15,7 @@ export default class  {
         this.password = password;
         this.apiUrl = "https://api.volvotrucks.com/";
         this.gaidoUrl = "http://vtf.spv.gaido.fr/";
+        //this.gaidoUrl = "http://localhost:8083/";
     }
 
     async loginToGaido() {
@@ -128,6 +129,11 @@ export default class  {
                         starttime: dateDebut.toISOString(),
                         stoptime: dateFin.toISOString()
                     }
+                });
+
+                console.log({
+                    starttime: dateDebut.toISOString(),
+                    stoptime: dateFin.toISOString()
                 });
 
                 allData = JSON.parse(allData);

@@ -41,7 +41,7 @@ export default class MergeData {
                 const ishiftTotal = auto + manual + power;
 
                 formatData.push({
-                    coasting: (tmpData.coasting.meters/(dist-cruiseDist))*100,
+                    coasting: (tmpData.coasting.meters/(dist))*100,
                     freinage: tmpData.brakeCount,
                     arret: tmpData.stopCount,
                     ratioFreinage: tmpData.brakeCount
