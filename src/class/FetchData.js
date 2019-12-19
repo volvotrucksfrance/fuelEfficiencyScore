@@ -36,7 +36,7 @@ export default class  {
 
         } catch(err) {
 
-            return err;
+            throw err;
         }
     }
 

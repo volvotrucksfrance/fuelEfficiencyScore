@@ -321,12 +321,18 @@ export default {
         
         async loginGaido() {
 
-            this.dataFetcher = new FetchData(this.login, this.password);
-            let tmpDrivers = await this.dataFetcher.loginToGaido();
+            try {
 
-            this.msgDate = `Données disponible entre le ${new Date(tmpDrivers.oldRecord).toLocaleDateString('fr-FR')} et le ${new Date().toLocaleDateString('fr-FR')}`;
-            this.userData = tmpDrivers;
-            return tmpDrivers;
+                this.dataFetcher = new FetchData(this.login, this.password);
+                let tmpDrivers = await this.dataFetcher.loginToGaido();
+
+                this.msgDate = `Données disponible entre le ${new Date(tmpDrivers.oldRecord).toLocaleDateString('fr-FR')} et le ${new Date().toLocaleDateString('fr-FR')}`;
+                this.userData = tmpDrivers;
+                return tmpDrivers;
+            } catch(err) {
+
+            }
+            
         },
 
         async tryCredentials() {
