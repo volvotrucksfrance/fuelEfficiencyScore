@@ -441,8 +441,6 @@ export default class MergeData {
             
         }
 
-        console.log(this.mergedData);
-
         return this.mergedData;
     }
 
@@ -480,7 +478,6 @@ export default class MergeData {
 
         } catch (err) {
 
-            console.log("err", err);
         }
     }
 

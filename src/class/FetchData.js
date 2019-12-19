@@ -15,7 +15,6 @@ export default class  {
         this.password = password;
         this.apiUrl = "https://api.volvotrucks.com/";
         this.gaidoUrl = "http://vtf.spv.gaido.fr/";
-        //this.gaidoUrl = "http://localhost:8083/";
     }
 
     async loginToGaido() {
@@ -37,7 +36,6 @@ export default class  {
 
         } catch(err) {
 
-            console.log(err);
             return err;
         }
     }
@@ -82,12 +80,10 @@ export default class  {
 
             } while(shouldFetchMore);
 
-            console.log(res);
             return true;
             
         } catch (err) {
 
-            console.log(err);
             return false;
         }
 
@@ -115,6 +111,11 @@ export default class  {
 
             try {
 
+                dateFin = dateFin.addDays(1);
+                console.log({
+                    starttime: dateDebut.toISOString(),
+                    stoptime: dateFin.toISOString()
+                });
                 let allData = await rp({
                     method: 'GET',
                     url: this.gaidoUrl + 'api/v2/vehicle/vehiclestatuses',
@@ -129,11 +130,6 @@ export default class  {
                         starttime: dateDebut.toISOString(),
                         stoptime: dateFin.toISOString()
                     }
-                });
-
-                console.log({
-                    starttime: dateDebut.toISOString(),
-                    stoptime: dateFin.toISOString()
                 });
 
                 allData = JSON.parse(allData);
@@ -152,7 +148,6 @@ export default class  {
 
             } catch(err) {
 
-                console.log(err);
             }
         //on recup le debut sur gaido et la suite sur Volvo Connect
         } else if(!isDebutToday && isFinToday) {
@@ -244,7 +239,6 @@ export default class  {
             
         } catch(err) {
 
-            console.log(err);
         }
     }
 
@@ -351,18 +345,16 @@ export default class  {
                         }
                         
                     }
-                    console.log('another one');
+
                     await this.sleep(10000);
 
                 } while(shouldFetchMore);
             }
 
-            console.log(brutData);
             return brutData;
 
         } catch (err) {
 
-            console.log(err);
             store.commit('setPourcentage', 'Une erreur est survenue !');
             return err;
         }
