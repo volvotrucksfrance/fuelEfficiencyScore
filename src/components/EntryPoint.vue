@@ -359,7 +359,7 @@ export default {
                 this.$notify({
                     group: 'notif',
                     title: 'Message',
-                    text: 'Erreur login/mot de passe',
+                    text: 'Erreur login/mot de passe RELEASE 2.0',
                     type: 'warning'
                 });
                 this.showLogin = true;
