@@ -24,7 +24,7 @@
                     <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.coasting)}}% distance</span><br>
                     <span>- Freinage: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.braking)}">{{roundNumber(this.$store.state.scoreDetail.braking)}}</span>
-                    <span class="show_brut_number">
+                    <span>
                         {{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.ratioFreinage)}}
                         - freinage: 
                         {{parseInt(this.$store.state.scoreDetail.brutVolvoConnect.freinage)}}
@@ -147,10 +147,5 @@ export default {
 
     margin-top: 10px;
     margin-left: 35px;
-}
-
-.show_brut_number:hover {
-
-    color: red;
 }
 </style>

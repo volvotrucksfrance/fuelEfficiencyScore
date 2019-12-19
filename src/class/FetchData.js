@@ -95,7 +95,11 @@ export default class  {
         var isFinToday = moment(dateFin).isSame(new Date(), "day");
 
         dateDebut = new Date(dateDebut);
+        dateDebut.setHours(dateDebut.getHours() - 1);
+
         dateFin = new Date(dateFin);
+        dateFin.setHours(dateFin.getHours() + 23);
+        dateFin.setSeconds(dateFin.getSeconds() + 1);
 
         var brutData = {
             debut : {
@@ -111,7 +115,6 @@ export default class  {
 
             try {
 
-                dateFin = dateFin.addDays(1);
                 let allData = await rp({
                     method: 'GET',
                     url: this.gaidoUrl + 'api/v2/vehicle/vehiclestatuses',
@@ -144,6 +147,7 @@ export default class  {
 
             } catch(err) {
 
+                console.log(err);
             }
         //on recup le debut sur gaido et la suite sur Volvo Connect
         } else if(!isDebutToday && isFinToday) {
@@ -170,6 +174,7 @@ export default class  {
 
                 brutData.debut[debutData[i].vin] = debutData[i];
             }
+
 
             const lastData = await this.getVehiclesDataLatest();
             for(var i = 0; i < lastData.length - 1; i++) {
@@ -240,13 +245,6 @@ export default class  {
 
 
     async getVehiclesData(dateDebut, dateFin, store, vue) {
-
-        dateDebut = new Date(dateDebut);
-        dateDebut.setHours(dateDebut.getHours() - 1);
-
-        dateFin = new Date(dateFin);
-        dateFin.setHours(dateFin.getHours() + 23);
-        dateFin.setSeconds(dateFin.getSeconds() + 1);
 
         const realStart = dateDebut;
         const realEnd = dateFin;
