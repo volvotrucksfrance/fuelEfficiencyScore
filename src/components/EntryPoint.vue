@@ -45,6 +45,14 @@
                     </v-layout>
                 </v-container>
 
+                <v-container fill-height>
+                    <v-layout row wrap align-center>
+                        <v-flex class="text-xs-center red--text">
+                            {{this.errorLogin}}
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+
             </v-container>
         </transition>
         <!-- END LOGIN -->
@@ -237,6 +245,7 @@ export default {
     data() {
 
         return {
+            errorLogin: '',
             msgDate: '',
             userData: null,
             dialog_score: false,
@@ -263,7 +272,7 @@ export default {
             selected: [],
             headers: [
                 {
-                    text: 'Nom',
+                    text: 'VIN',
                     align: 'left',
                     value: 'name',
                     width: "1%"
@@ -356,12 +365,7 @@ export default {
                 this.showLogin = false;
             } else {
 
-                this.$notify({
-                    group: 'notif',
-                    title: 'Message',
-                    text: 'Erreur login/mot de passe',
-                    type: 'warning'
-                });
+                this.errorLogin = 'Erreur login/mot de passe';
                 this.showLogin = true;
             }
         },
