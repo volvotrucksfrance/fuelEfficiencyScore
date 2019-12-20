@@ -76,7 +76,7 @@
                     <span>- Survitesse: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.overspeed)}">{{roundNumber(this.$store.state.scoreDetail.overspeed)}}</span>
                     <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.overspeed)}}% carburant</span><br>
-                    <span>- Régulateur: </span>
+                    <span>- Régulateur d'allure: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.cruise)}">{{roundNumber(this.$store.state.scoreDetail.cruise)}}</span>
                     <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.cruise)}}% distance</span>
                 </div>
