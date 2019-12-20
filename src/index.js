@@ -1,7 +1,4 @@
 import { app, BrowserWindow } from 'electron';
-const { autoUpdater } = require("electron-updater");
-
-autoUpdater.checkForUpdatesAndNotify()
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -17,7 +14,7 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     show: false,
     webPreferences: {
-      devTools: true
+      devTools: false
     },
     width: 1280,
     heigth: 1024 
