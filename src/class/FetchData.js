@@ -80,7 +80,7 @@ export default class  {
 
             } while(shouldFetchMore);
 
-            return true;
+            return res;
             
         } catch (err) {
 
@@ -89,7 +89,7 @@ export default class  {
 
     }
 
-    async getVehiclesDataGaido(dateDebut, dateFin, store) {
+    async getVehiclesDataGaido(dateDebut, dateFin, store, groupby) {
 
         var isDebutToday = moment(dateDebut).isSame(new Date(), "day");
         var isFinToday = moment(dateFin).isSame(new Date(), "day");
@@ -127,26 +127,28 @@ export default class  {
                     },
                     qs: {
                         starttime: dateDebut.toISOString(),
-                        stoptime: dateFin.toISOString()
+                        stoptime: dateFin.toISOString(),
+                        groupby: groupby
                     }
                 });
 
                 allData = JSON.parse(allData);
-   
+
                 for(var i = 0; i < allData.old.length - 1; i++) {
 
-                    brutData.debut[allData.old[i].vin] = allData.old[i];
+                    brutData.debut[allData.old[i][groupby]] = allData.old[i];
                 }
 
                 for(var i in allData.recent) {
 
-                    brutData.fin[allData.recent[i].vin] = allData.recent[i];
+                    brutData.fin[allData.recent[i][groupby]] = allData.recent[i];
                 }
 
                 return brutData;
 
             } catch(err) {
 
+                console.log(err);
                 return false;
             }
         //on recup le debut sur gaido et la suite sur Volvo Connect
@@ -184,7 +186,6 @@ export default class  {
 
                         brutData.fin[lastData[i].vin] = lastData[i];
                     }
-
                 }
 
                 return brutData;

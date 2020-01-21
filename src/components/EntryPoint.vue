@@ -372,9 +372,11 @@ export default {
 
         getDriverNameById(id) {
 
+
+            console.log(this.driverData);
             for(var i in this.driverData) {
 
-                if(this.driverData[i].tachoDriverIdentification.driverIdentification.trim() == id.trim()) {
+                if(this.driverData[i].tachoDriverIdentification.cardIssuingMemberState + this.driverData[i].tachoDriverIdentification.driverIdentification == id) {
 
                     return this.driverData[i].firstName + this.driverData[i].lastName;
                 }
@@ -444,11 +446,17 @@ export default {
                     this.$store.commit('setStopDate', this.dateFin);
                     this.showDate = false;
                     this.showScores = true;  
-                    this.allData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, this);
+                    this.allData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'driverID');
                     const myMergeData = new MergeData();
                     myMergeData.byTrucks(this.allData);
                     this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
                     var tabTrucksScore = [];
+
+
+                    // ONLY IF DRIVER ID
+                    this.driverData = await this.dataFetcher.getDrivers();
+
+
                     for(var i in this.saveFetchedData) {
 
                         const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
@@ -459,10 +467,12 @@ export default {
                             truckScore.brutData = myScore.getFesScore();
                             truckScore.brutData.score = truckScore;
                             truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
-                            truckScore.name = this.saveFetchedData[i].vin;
+                            /* truckScore.name = this.saveFetchedData[i].id; */
+
+                            truckScore.name = this.getDriverNameById(this.saveFetchedData[i].id);
+
                             tabTrucksScore.push(truckScore);
                         }
-                        
                     }
 
                     this.loadingTrucks = false;

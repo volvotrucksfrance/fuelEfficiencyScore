@@ -21,13 +21,13 @@ export default class MergeData {
 
         let formatData = [];
 
-        const listVin = Object.keys(data);
+        const listKey = Object.keys(data);
 
-        for(var i in listVin) {
+        for(var i in listKey) {
 
-            const vin = listVin[i];
+            const id = listKey[i];
 
-            const tmpData = data[vin];
+            const tmpData = data[id];
             const dist = tmpData.distance;
             const time = tmpData.time;
             const fuel = tmpData.fuel*1000;
@@ -60,7 +60,7 @@ export default class MergeData {
                     time: time,
                     dist: dist,
                     fuel: fuel,
-                    vin: vin
+                    id: id
                 });
             }
         }
