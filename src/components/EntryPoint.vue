@@ -149,75 +149,63 @@
         <transition name="fade">
         <div v-if="showScores">
             <v-toolbar fixed flat color="white">
-            <v-btn icon color="dark" @click="goToListDrivers">
-              <v-icon>arrow_back</v-icon>
-            </v-btn>
+                <v-btn icon color="dark" @click="goToListDrivers">
+                <v-icon>arrow_back</v-icon>
+                </v-btn>
 
-            <v-toolbar-title>Score fuel efficiency {{this.convertFrenchFormat(this.$store.state.startTime)}} - {{this.convertFrenchFormat(this.$store.state.stopTime)}}</v-toolbar-title>
+                <v-toolbar-title>Score fuel efficiency {{this.convertFrenchFormat(this.$store.state.startTime)}} - {{this.convertFrenchFormat(this.$store.state.stopTime)}}</v-toolbar-title>
 
-            <v-spacer></v-spacer>
-
-            <v-toolbar-items>
-                <v-text-field
-                    v-model="search"
-                    append-icon="search"
-                    label="Recherche"
-                    single-line
-                    hide-details
-                ></v-text-field>
-                <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-                    <template v-slot:activator="{ on }">
-                        <v-btn flat v-on="on" class="showDialog">
-                            Paramètre
-                        </v-btn>
-                    </template>
-                    <Settings/>
-                </v-dialog>
-            </v-toolbar-items>
-          </v-toolbar>
-           <v-container>
-                <v-card-title>
                 <v-spacer></v-spacer>
-                </v-card-title>
-                <v-data-table
-                    :headers="headers"
-                    :items="trucksScore"
-                    :search="search"
-                    :pagination.sync="pagination"
-                    :loading="loadingTrucks"
-                    :no-data-text="this.$store.state.pourcentage"
-                    rows-per-page-text="Lignes par page"
-                >
-                <template v-slot:items="props">
-                    <tr @click="showScoreDetail(props.item.brutData)" >
-                        <td>{{ props.item.name }}</td>
-                        <td class="text-xs-right title" :style="{'color': getColor(props.item.score)}">{{ props.item.score }}</td>
-                        <td class="text-xs-right title" :style="{'color': getColor(props.item.anticipation)}">{{ props.item.anticipation }}</td>
-                        <td class="text-xs-right title" :style="{'color': getColor(props.item.engine)}">{{ props.item.engine }}</td>
-                        <td class="text-xs-right title" :style="{'color': getColor(props.item.speed)}">{{ props.item.speed }}</td>
-                        <td class="text-xs-right title" :style="{'color': getColor(props.item.idle)}">{{ props.item.idle }}</td>
-                    </tr>
-                </template>
-                <template v-slot:no-results>
-                    <v-alert :value="true" color="error" icon="warning">
-                        Aucun résultat.
-                    </v-alert>
-                </template>
 
-                <template slot="pageText" slot-scope="item">
-                    Element de {{item.pageStart}} - {{item.pageStop}}, sur {{item.itemsLength}}
-                </template>
-                </v-data-table>
-            </v-container>
+                <v-toolbar-items>
+                    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+                        <template v-slot:activator="{ on }">
+                            <v-btn flat v-on="on" class="showDialog">
+                                Paramètre
+                            </v-btn>
+                        </template>
+                        <Settings/>
+                    </v-dialog>
+                </v-toolbar-items>
+            </v-toolbar>
+
+            <v-tabs
+                class="toolbar_margin"
+                dark
+                grow
+            >
+                <v-tabs-slider></v-tabs-slider>
+
+                <v-tab
+                    href="#tab-1"
+                >
+                    CONDUCTEUR
+                </v-tab>
+
+                <v-tab
+                    href="#tab-2"
+                >
+                    CAMION
+                </v-tab>
+
+                <v-tab-item
+                    value="tab-1"
+                >
+                    <TabData name="Nom" :tabData="this.driverScore"/>
+                </v-tab-item>
+
+                <v-tab-item
+                    value="tab-2"
+                >
+                    <TabData name="VIN" :tabData="this.trucksScore"/>
+                </v-tab-item>
+            </v-tabs>
         </div>
         </transition>
         <!-- END SHOW SCORE -->
 
 
     </div>
-    <v-dialog v-model="dialog_score" max-width="400" >
-        <ScoreDetail />
-    </v-dialog>
     </v-app>
 </template>
 
@@ -236,11 +224,14 @@ moment.locale('fr');
 
 const DATE_FORMAT = "DD/MM/YYYY";
 
+import TabData from './TabData';
+
 export default {
     name: "EntryPoint",
     components: {
         Settings,
-        ScoreDetail
+        ScoreDetail,
+        TabData
     },
     data() {
 
@@ -248,7 +239,6 @@ export default {
             errorLogin: '',
             msgDate: '',
             userData: null,
-            dialog_score: false,
             loadText: this.$store.state.pourcentage,
             loadingTrucks: true,
             showLogin: true,
@@ -286,6 +276,9 @@ export default {
             trucksScore: [
 
             ],
+            driverScore: [
+
+            ],
             search: "",
             timeoutTest: null,
             saveFetchedData: []
@@ -298,28 +291,10 @@ export default {
     },
 
     methods: {
-        showScoreDetail(data) {
-
-            this.$store.commit('setScoreDetail', data);
-            this.dialog_score = true;
-        }, 
         convertFrenchFormat(date) {
 
             const myDate = moment(date, 'YYYY-MM-DD');
             return myDate.format('DD/MM/YYYY');
-        },
-        getColor(perc) {
-
-            if(perc <= 59) {
-
-                return "#BB0B0B";//rouge
-            } else if(perc <= 79) {
-
-                return "#FFCC00";//yellow
-            } else if(perc <= 100) {
-
-                return "#32CD32";//green
-            }
         },
 
         logout() {
@@ -372,8 +347,6 @@ export default {
 
         getDriverNameById(id) {
 
-
-            console.log(this.driverData);
             for(var i in this.driverData) {
 
                 if(this.driverData[i].tachoDriverIdentification.cardIssuingMemberState + this.driverData[i].tachoDriverIdentification.driverIdentification == id) {
@@ -439,46 +412,58 @@ export default {
 
                 }
 
-                    this.trucksScore = [];
-                    this.loadingTrucks = true;
-                    //this.loadText = this.$store.state.pourcentage;
-                    this.$store.commit('setStartDate', this.dateDebut);
-                    this.$store.commit('setStopDate', this.dateFin);
-                    this.showDate = false;
-                    this.showScores = true;  
-                    this.allData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'driverID');
-                    const myMergeData = new MergeData();
-                    myMergeData.byTrucks(this.allData);
-                    this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
-                    var tabTrucksScore = [];
+                this.trucksScore = [];
+                this.loadingTrucks = true;
+                //this.loadText = this.$store.state.pourcentage;
+                this.$store.commit('setStartDate', this.dateDebut);
+                this.$store.commit('setStopDate', this.dateFin);
+                this.showDate = false;
+                this.showScores = true;  
+                const driverData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'driverID');
+                const truckData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'vin');
 
+                this.driverData = await this.dataFetcher.getDrivers();
+                
+                this.driverScore = await this.brutDataToArray(driverData, false);
+                this.trucksScore = await this.brutDataToArray(truckData, true);
 
-                    // ONLY IF DRIVER ID
-                    this.driverData = await this.dataFetcher.getDrivers();
+                this.$emit('update:tabData', this.driverScore);
+                this.$emit('update:tabData', this.trucksScore);
+            }
+        },
 
+        async brutDataToArray(data, isTruck) {
 
-                    for(var i in this.saveFetchedData) {
+            const myMergeData = new MergeData();
+            myMergeData.byTrucks(data);
+            this.saveFetchedData = myMergeData.getFormatedData(myMergeData.getDataTrucks());
+            var tabData = [];
 
-                        const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
-                        
-                        var truckScore = myScore.getScore();
-                        if(!isNaN(truckScore.score)) {
+            for(var i in this.saveFetchedData) {
 
-                            truckScore.brutData = myScore.getFesScore();
-                            truckScore.brutData.score = truckScore;
-                            truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
-                            /* truckScore.name = this.saveFetchedData[i].id; */
+                const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
+                
+                var computedScore = myScore.getScore();
+                if(!isNaN(computedScore.score)) {
 
-                            truckScore.name = this.getDriverNameById(this.saveFetchedData[i].id);
+                    computedScore.brutData = myScore.getFesScore();
+                    computedScore.brutVolvoConnect = this.saveFetchedData[i];
 
-                            tabTrucksScore.push(truckScore);
-                        }
+                    if(isTruck) {
+
+                        computedScore.name = this.saveFetchedData[i].id;
+
+                    } else {
+
+                         computedScore.name = this.getDriverNameById(this.saveFetchedData[i].id);
                     }
 
-                    this.loadingTrucks = false;
-                    this.trucksScore = tabTrucksScore;
-                    this.loadText = "Pas de données"
+                    tabData.push(computedScore);
+                }
             }
+
+            this.loadingTrucks = false;
+            return tabData;
         },
 
         goToListDrivers() {
@@ -570,5 +555,9 @@ export default {
 .top_margin {
 
     margin-top: 20vh;
+}
+.toolbar_margin {
+
+    margin-top: 75px;
 }
 </style>
