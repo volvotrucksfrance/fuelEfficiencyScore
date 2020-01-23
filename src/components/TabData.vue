@@ -110,6 +110,7 @@ export default {
         },
         showScoreDetail(data) {
 
+            console.log(data);
             this.$store.commit('setScoreDetail', data);
             this.dialog_score = true;
         }

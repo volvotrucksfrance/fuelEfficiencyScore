@@ -427,6 +427,8 @@ export default {
                 this.driverScore = await this.brutDataToArray(driverData, false);
                 this.trucksScore = await this.brutDataToArray(truckData, true);
 
+                console.log(this.driverScore);
+
                 this.$emit('update:tabData', this.driverScore);
                 this.$emit('update:tabData', this.trucksScore);
             }
