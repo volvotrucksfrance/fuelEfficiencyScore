@@ -21,10 +21,10 @@
                 <div class="icon_margin">
                     <span>- Roue libre: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.coasting)}">{{roundNumber(this.$store.state.scoreDetail.brutData.coasting)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.coasting)}}% distance</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.coasting)}}% distance</span><br>
                     <span>- Freinage: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.braking)}">{{roundNumber(this.$store.state.scoreDetail.brutData.braking)}}</span>
-                    <span>
+                    <span class="brutDataDisplay">
                         {{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.ratioFreinage)}}
                         - freinage: 
                         {{parseInt(this.$store.state.scoreDetail.brutVolvoConnect.freinage)}}
@@ -42,28 +42,28 @@
                 <div class="icon_margin">
                     <span>- Mode automatique: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.i_shift_a)}">{{roundNumber(this.$store.state.scoreDetail.brutData.i_shift_a)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.auto)}}% temps</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.auto)}}% temps</span><br>
                     <span>- Mode manuel: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.i_shift_m)}">{{roundNumber(this.$store.state.scoreDetail.brutData.i_shift_m)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.manual)}}% temps</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.manual)}}% temps</span><br>
                     <span>- Mode puissance: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.i_shift_p)}">{{roundNumber(this.$store.state.scoreDetail.brutData.i_shift_p)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.power)}}% temps</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.power)}}% temps</span><br>
                     <span>- Rapport supérieur: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.topgear)}">{{roundNumber(this.$store.state.scoreDetail.brutData.topgear)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.topGear)}}% distance</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.topGear)}}% distance</span><br>
                     <span>- En mode économique: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.inEco)}">{{roundNumber(this.$store.state.scoreDetail.brutData.inEco)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.inEco)}}% carburant</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.inEco)}}% carburant</span><br>
                     <span>- Au-delà du mode économique: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.outEco)}">{{roundNumber(this.$store.state.scoreDetail.brutData.outEco)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.outEco)}}% carburant</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.outEco)}}% carburant</span><br>
                     <span>- Surrégime moteur: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.overrev)}">{{roundNumber(this.$store.state.scoreDetail.brutData.overrev)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.overrev)}}% temps</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.overrev)}}% temps</span><br>
                     <span>- Charge moteur: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.engineload)}">{{roundNumber(this.$store.state.scoreDetail.brutData.engineload)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.engineload)}}% distance</span>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.engineload)}}% distance</span>
                 </div>
             </div>
             <div>
@@ -75,10 +75,10 @@
                 <div class="icon_margin">
                     <span>- Survitesse: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.overspeed)}">{{roundNumber(this.$store.state.scoreDetail.brutData.overspeed)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.overspeed)}}% carburant</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.overspeed)}}% carburant</span><br>
                     <span>- Régulateur d'allure: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.cruise)}">{{roundNumber(this.$store.state.scoreDetail.brutData.cruise)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.cruise)}}% distance</span>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.cruise)}}% distance</span>
                 </div>
             </div>
             <div>
@@ -90,7 +90,7 @@
                 <div class="icon_margin">
                     <span>- Ralenti: </span>
                     <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.idling)}">{{roundNumber(this.$store.state.scoreDetail.brutData.idling)}}</span>
-                    <span>{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.idling)}}% temps</span><br>
+                    <span class="brutDataDisplay">{{roundNumber(this.$store.state.scoreDetail.brutVolvoConnect.idling)}}% temps</span><br>
                 </div>
             </div>
         </v-card-text>
@@ -147,5 +147,10 @@ export default {
 
     margin-top: 10px;
     margin-left: 35px;
+}
+
+.brutDataDisplay {
+
+    float: right;
 }
 </style>
