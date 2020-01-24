@@ -158,6 +158,9 @@
                 <v-spacer></v-spacer>
 
                 <v-toolbar-items>
+                    <v-btn flat v-on="on" class="showDialog" @click="print">
+                        Export as PDF
+                    </v-btn>
                     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
                         <template v-slot:activator="{ on }">
                             <v-btn flat v-on="on" class="showDialog">
@@ -169,15 +172,16 @@
                 </v-toolbar-items>
             </v-toolbar>
 
+            <FleetScore class="toolbar_margin" />
+
             <v-tabs
-                class="toolbar_margin"
-                dark
                 grow
             >
-                <v-tabs-slider></v-tabs-slider>
+                <v-tabs-slider color="black"></v-tabs-slider>
 
                 <v-tab
                     href="#tab-1"
+                    id='tabConducteur'
                 >
                     CONDUCTEUR
                 </v-tab>
@@ -199,6 +203,7 @@
                 >
                     <TabData name="VIN" :tabData="this.trucksScore"/>
                 </v-tab-item>
+
             </v-tabs>
         </div>
         </transition>
@@ -225,13 +230,18 @@ moment.locale('fr');
 const DATE_FORMAT = "DD/MM/YYYY";
 
 import TabData from './TabData';
+import FleetScore from './FleetScore.vue';
+
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default {
     name: "EntryPoint",
     components: {
         Settings,
         ScoreDetail,
-        TabData
+        TabData,
+        FleetScore
     },
     data() {
 
@@ -281,7 +291,9 @@ export default {
             ],
             search: "",
             timeoutTest: null,
-            saveFetchedData: []
+            saveFetchedData: [],
+            brutTrucksScore: [],
+            brutDriversScore: []
         }
     },
     async created() {
@@ -355,7 +367,7 @@ export default {
                 }
             }
 
-            return 'Unknown';
+            return id;
         },
 
         computedDateFormattedMomentjs(tmpDate) {
@@ -418,16 +430,15 @@ export default {
                 this.$store.commit('setStartDate', this.dateDebut);
                 this.$store.commit('setStopDate', this.dateFin);
                 this.showDate = false;
-                this.showScores = true;  
-                const driverData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'driverID');
-                const truckData = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'vin');
+                this.showScores = true; 
+
+                this.brutDriversScore = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'driverID');
+                this.brutTrucksScore = await this.dataFetcher.getVehiclesDataGaido(this.dateDebut, this.dateFin, this.$store, 'vin');
 
                 this.driverData = await this.dataFetcher.getDrivers();
                 
-                this.driverScore = await this.brutDataToArray(driverData, false);
-                this.trucksScore = await this.brutDataToArray(truckData, true);
-
-                console.log(this.driverScore);
+                this.driverScore = await this.brutDataToArray(this.brutDriversScore, false);
+                this.trucksScore = await this.brutDataToArray(this.brutTrucksScore, true);
 
                 this.$emit('update:tabData', this.driverScore);
                 this.$emit('update:tabData', this.trucksScore);
@@ -457,7 +468,7 @@ export default {
 
                     } else {
 
-                         computedScore.name = this.getDriverNameById(this.saveFetchedData[i].id);
+                        computedScore.name = this.getDriverNameById(this.saveFetchedData[i].id);
                     }
 
                     tabData.push(computedScore);
@@ -474,26 +485,26 @@ export default {
             this.showScores = false;
             this.showDate = true;
         },
+        print() {
 
-        updateScores() {
+            /* let pdfName = 'mes-enfants'; 
+            var doc = new jsPDF();
 
-            this.loadText = this.$store.state.pourcentage;
-            this.loadingTrucks = false;
-            var tabTrucksScore = [];
-            for(var i in this.saveFetchedData) {
-                const myScore = new FuelEfficiencyScore(this.saveFetchedData[i], this.$store.state.config);
-                
-                var truckScore = myScore.getScore();
-                if(!isNaN(truckScore.score)) {
-                    truckScore.brutData = myScore.getFesScore();
-                    truckScore.brutData.score = truckScore;
-                    truckScore.brutData.brutVolvoConnect = this.saveFetchedData[i];
-                    truckScore.name = this.saveFetchedData[i].vin;
-                    tabTrucksScore.push(truckScore);
-                }
-                
-            }
-            this.trucksScore = tabTrucksScore;
+            doc.fromHTML(document.getElementById('tabConducteur'), 15, 15, {
+            'width': 170
+            });
+
+            doc.save(pdfName + '.pdf'); */
+
+            var pdf = new jsPDF();
+            var element = document.getElementById('tabConducteur');
+            var width = element.style.width;
+            var height = element.style.height;
+            html2canvas(element).then(canvas => {
+                var image = canvas.toDataURL('image/png');
+                pdf.addImage(image, 'JPEG', 15, 40, width, height);
+                pdf.save('fes.pdf');
+            });
         }
     },
     computed: {
@@ -508,12 +519,13 @@ export default {
         }
     },
     watch: {
-        dialog: function(e) {
+        dialog: async function(e) {
 
-            this.loadText = 'Chargement en cours...';
-            this.loadingTrucks = true;
-            this.trucksScore = [];
-            window.setTimeout(this.updateScores, 1000);
+            this.driverScore = await this.brutDataToArray(this.brutDriversScore);
+            this.trucksScore = await this.brutDataToArray(this.brutTrucksScore);
+
+            this.$emit('update:tabData', this.driverScore);
+            this.$emit('update:tabData', this.trucksScore);
         }
     }
 }
@@ -560,6 +572,6 @@ export default {
 }
 .toolbar_margin {
 
-    margin-top: 75px;
+    margin-top: 65px;
 }
 </style>

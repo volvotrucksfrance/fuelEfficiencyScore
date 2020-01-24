@@ -4,11 +4,9 @@
         @keyup="showBrut()"
     >
         <!-- scoreDetail{{this.$store.state.scoreDetail.auto}} -->
-        <v-card-title class="headline">
-            <div>
-                Score d'efficacité énergétique<br>
-                <span class="display-3" :style="{padding: '0 7px 0 7px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score)}">  {{this.$store.state.scoreDetail.score}}  </span>
-            </div>
+        <v-card-title class="headline justify-center">
+                Score d'efficacité énergétique
+                <span class="display-3" :style="{'margin-top': '10px',padding: '0 7px 0 7px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score)}">  {{this.$store.state.scoreDetail.score}}  </span>
         </v-card-title>
 
         <v-card-text>
@@ -70,7 +68,7 @@
                 <div class="title">
                     <Speed/>
                     <span>Adaptation de la vitesse: </span>
-                    <span :style="{'color': getColor(this.$store.state.scoreDetail.brutData.speed)}">{{roundNumber(this.$store.state.scoreDetail.brutData.speed)}}</span>
+                    <span :style="{'color': getColor(this.$store.state.scoreDetail.speed)}">{{roundNumber(this.$store.state.scoreDetail.speed)}}</span>
                 </div>
                 <div class="icon_margin">
                     <span>- Survitesse: </span>

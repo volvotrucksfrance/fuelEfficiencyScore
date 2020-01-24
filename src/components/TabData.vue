@@ -110,7 +110,6 @@ export default {
         },
         showScoreDetail(data) {
 
-            console.log(data);
             this.$store.commit('setScoreDetail', data);
             this.dialog_score = true;
         }
@@ -120,9 +119,15 @@ export default {
 
             handler(tab) {
 
-                this.trucksScore = tab;
-                this.loadingTrucks = false;
-                this.loadText = "Pas de données";
+                this.trucksScore = [];
+                this.loadingTrucks = true;
+                this.loadText = "Chargement en cours...";
+                window.setTimeout(() => {
+
+                    this.trucksScore = tab;
+                    this.loadingTrucks = false;
+                    this.loadText = "Pas de données";
+                }, 1000);
             }
         }
     }

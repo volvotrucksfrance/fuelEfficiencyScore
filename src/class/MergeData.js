@@ -31,7 +31,6 @@ export default class MergeData {
             const dist = tmpData.distance;
             const time = tmpData.time;
             const fuel = tmpData.fuel*1000;
-            const cruiseDist = tmpData.cruise.meters;
 
             if(dist != NaN && time != NaN) {
 
