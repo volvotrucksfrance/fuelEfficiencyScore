@@ -1,15 +1,30 @@
 <template>
-        <v-expansion-panel
-            expand
-            focusable
-        >
-            <v-expansion-panel-content>
-                <template v-slot:header>
-                    <div class="subtitle-2 text-center">Agnostic RTL Alignment</div>
-                </template>
-                <span class="display-3" :style="{padding: '0 7px 0 7px', 'color': 'white', 'background-color': getColor(80)}">80</span>
-            </v-expansion-panel-content>
-        </v-expansion-panel>
+<div>
+    <div :style="{width: '100%', 'background-color': getColor(65)}">
+        <v-container bg fill-height grid-list-md text-xs-center>
+            <v-layout row wrap align-center>
+                <v-flex class="display-4" :style="{ 'color': 'white'}">
+                    65
+                </v-flex>
+            </v-layout>
+        </v-container>
+    </div>
+    <v-container bg fill-height grid-list-md text-xs-center>
+        <v-layout row wrap align-center>
+            <v-flex class="display-3">
+                    <Pedal/> Anticipation et freinage 
+                    <span :style="{'color': getColor(65)}">65</span><br>
+                    <Engine/> Moteur et boite de vitesse 
+                    <span :style="{'color': getColor(65)}">65</span><br>
+                    <Speed/> Adaptation de la vitesse 
+                    <span :style="{'color': getColor(65)}">65</span><br>
+                    <Truck/> A l'arrêt 
+                    <span :style="{'color': getColor(65)}">65</span>
+            </v-flex>
+        </v-layout>
+    </v-container>
+    
+</div>
 </template>
 
 <script>
@@ -44,9 +59,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.v-expansion-panel__header > .v-expansion-panel__header__icon {
-  flex: 1 1 auto !important;
-}
-</style>
