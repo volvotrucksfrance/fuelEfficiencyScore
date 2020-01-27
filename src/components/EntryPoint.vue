@@ -127,6 +127,14 @@
             <v-container>
                 <v-layout row wrap align-center>
                     <v-flex class="text-xs-center">
+                        <p class="red--text">{{this.errorDate}}</p>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+
+            <v-container>
+                <v-layout row wrap align-center>
+                    <v-flex class="text-xs-center">
                         <v-btn 
                             color="success"
                             @click="getScore"
@@ -291,7 +299,8 @@ export default {
             timeoutTest: null,
             saveFetchedData: [],
             brutTrucksScore: [],
-            brutDriversScore: []
+            brutDriversScore: [],
+            errorDate: ''
         }
     },
     async created() {
@@ -379,18 +388,12 @@ export default {
 
             if(this.dateDebut > this.dateFin) {
 
-                return this.$notify({
-                    group: 'notif',
-                    title: 'Message',
-                    text: 'La date de debut doit etre antérieur à la date de fin'
-                });
+                return this.errorDate = 'La date de debut doit etre antérieur à la date de fin';
+
             } else if(this.dateDebut == null || this.dateFin == null) {
 
-                return this.$notify({
-                    group: 'notif',
-                    title: 'Message',
-                    text: 'Veuillez selectionner une date de debut et de fin'
-                });
+                return this.errorDate = 'Veuillez selectionner une date de debut et de fin';
+
             } else {
                 
                 const mostOldRecord = this.userData.oldRecord;
@@ -402,25 +405,20 @@ export default {
                     if(!moment(this.dateDebut).isBetween(mostOldRecord, mostRecentRecord, null, '[]') ||
                         !moment(this.dateFin).isBetween(mostOldRecord, mostRecentRecord, null, '[]')) {
 
-                        return this.$notify({
-                                group: 'notif',
-                                title: 'Message',
-                                text: `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`
-                            });
+                        return this.errorDate = `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
+
                     }
                     
                 } else if(!isDebutToday && isFinToday) {
                     //on check si debut dans la range
                     if(!moment(this.dateDebut).isBetween(mostOldRecord, mostRecentRecord, null, '[]')) {
 
-                        return this.$notify({
-                                group: 'notif',
-                                title: 'Message',
-                                text: `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`
-                            });
+                        return this.errorDate = `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
                     }
 
                 }
+
+                this.errorDate = '';
 
                 this.trucksScore = [];
                 this.loadingTrucks = true;
@@ -494,15 +492,6 @@ export default {
             this.showDate = true;
         },
         print() {
-
-            /* let pdfName = 'mes-enfants'; 
-            var doc = new jsPDF();
-
-            doc.fromHTML(document.getElementById('tabConducteur'), 15, 15, {
-            'width': 170
-            });
-
-            doc.save(pdfName + '.pdf'); */
 
             var pdf = new jsPDF();
             var element = document.getElementById('tabConducteur');
