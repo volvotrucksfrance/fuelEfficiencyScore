@@ -1,25 +1,33 @@
 <template>
-<div>
-    <div :style="{width: '100%', 'background-color': getColor(65)}">
+<div v-if="isSet">
+    <div :style="{width: '100%', 'background-color': getColor(this.score)}">
         <v-container bg fill-height grid-list-md text-xs-center>
             <v-layout row wrap align-center>
                 <v-flex class="display-4" :style="{ 'color': 'white'}">
-                    65
+                    {{this.score}}
                 </v-flex>
             </v-layout>
         </v-container>
     </div>
     <v-container bg fill-height grid-list-md text-xs-center>
         <v-layout row wrap align-center>
-            <v-flex class="display-3">
-                    <Pedal/> Anticipation et freinage 
-                    <span :style="{'color': getColor(65)}">65</span><br>
-                    <Engine/> Moteur et boite de vitesse 
-                    <span :style="{'color': getColor(65)}">65</span><br>
-                    <Speed/> Adaptation de la vitesse 
-                    <span :style="{'color': getColor(65)}">65</span><br>
-                    <Truck/> A l'arrêt 
-                    <span :style="{'color': getColor(65)}">65</span>
+            <v-flex class="headline">
+                <div class="space_text">
+                    <Pedal /> Anticipation et freinage 
+                    <span :style="{'color': getColor(this.anticipation)}">{{this.anticipation}}</span><br>
+                </div>
+                <div class="space_text">
+                    <Engine /> Moteur et boite de vitesse 
+                    <span :style="{'color': getColor(this.engine)}">{{this.engine}}</span><br>
+                </div>
+                <div class="space_text">
+                    <Speed /> Adaptation de la vitesse 
+                    <span :style="{'color': getColor(this.speed)}">{{this.speed}}</span><br>
+                </div>
+                <div class="space_text">
+                    <Truck /> A l'arrêt 
+                    <span :style="{'color': getColor(this.idle)}">{{this.idle}}</span>
+                </div>
             </v-flex>
         </v-layout>
     </v-container>
@@ -41,6 +49,21 @@ export default {
         Speed,
         Truck,
     },
+    data: () => {
+
+        return {
+            anticipation: '',
+            engine: '',
+            idle: '',
+            score: '',
+            speed: '',
+            isSet: false
+        }
+    },
+    props: {
+
+        fleetScore: Object
+    },
     methods: {
         getColor(perc) {
             perc = Number(perc);
@@ -56,6 +79,27 @@ export default {
                 return "#32CD32";//green
             }
         }
+    },
+    watch: {
+        fleetScore: {
+
+            handler(data) {
+
+                this.anticipation = data.anticipation;
+                this.engine = data.engine;
+                this.idle = data.idle;
+                this.score = data.score;
+                this.speed = data.speed;
+                this.isSet = true;
+            }
+        }
     }
 }
 </script>
+
+<style scoped>
+.space_text {
+
+    margin-bottom: 15px;
+}
+</style>

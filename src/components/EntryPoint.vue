@@ -158,9 +158,6 @@
                 <v-spacer></v-spacer>
 
                 <v-toolbar-items>
-                    <v-btn flat v-on="on" class="showDialog" @click="print">
-                        Export as PDF
-                    </v-btn>
                     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
                         <template v-slot:activator="{ on }">
                             <v-btn flat v-on="on" class="showDialog">
@@ -172,7 +169,7 @@
                 </v-toolbar-items>
             </v-toolbar>
 
-            <FleetScore class="toolbar_margin" />
+            <FleetScore class="toolbar_margin" :fleetScore="this.fleetScore"/>
 
             <v-tabs
                 grow
@@ -289,6 +286,7 @@ export default {
             driverScore: [
 
             ],
+            fleetScore: null,
             search: "",
             timeoutTest: null,
             saveFetchedData: [],
@@ -473,6 +471,16 @@ export default {
 
                     tabData.push(computedScore);
                 }
+            }
+
+            if(isTruck) {
+
+                const fleetData = myMergeData.getDataFleet();
+                const formatFleet = myMergeData.convertData('fleet', fleetData);
+                const myScore = new FuelEfficiencyScore(formatFleet, this.$store.state.config);
+                this.fleetScore = myScore.getScore();
+
+                this.$emit('update:fleetScore', this.fleetScore);
             }
 
             this.loadingTrucks = false;
