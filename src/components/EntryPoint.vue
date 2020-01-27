@@ -529,8 +529,8 @@ export default {
     watch: {
         dialog: async function(e) {
 
-            this.driverScore = await this.brutDataToArray(this.brutDriversScore);
-            this.trucksScore = await this.brutDataToArray(this.brutTrucksScore);
+            this.driverScore = await this.brutDataToArray(this.brutDriversScore, false);
+            this.trucksScore = await this.brutDataToArray(this.brutTrucksScore, true);
 
             this.$emit('update:tabData', this.driverScore);
             this.$emit('update:tabData', this.trucksScore);
