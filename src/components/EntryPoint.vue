@@ -318,6 +318,9 @@ export default {
 
         logout() {
 
+            this.dateDebut = '';
+            this.dateFin = '';
+            this.errorDate = '';
             this.showDate = false;
             this.showLogin = true;
         },
@@ -396,14 +399,20 @@ export default {
 
             } else {
                 
-                const mostOldRecord = this.userData.oldRecord;
-                const mostRecentRecord = this.userData.recentRecord;
+                let mostOldRecord = this.userData.oldRecord;
+                let mostRecentRecord = this.userData.recentRecord;
                 var isDebutToday = moment(this.dateDebut).isSame(new Date(), "day");
                 var isFinToday = moment(this.dateFin).isSame(new Date(), "day");
                 if(!isDebutToday && !isFinToday) {
                     //on check les 2 dates dans la bonne range
                     if(!moment(this.dateDebut).isBetween(mostOldRecord, mostRecentRecord, null, '[]') ||
                         !moment(this.dateFin).isBetween(mostOldRecord, mostRecentRecord, null, '[]')) {
+
+                        mostOldRecord = moment(mostOldRecord, 'YYYY-MM-DD');
+                        mostOldRecord = moment(mostOldRecord).add(1, 'days');
+                        mostOldRecord = this.convertFrenchFormat(mostOldRecord);
+                        mostRecentRecord = this.convertFrenchFormat(mostRecentRecord);
+                        
 
                         return this.errorDate = `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
 
@@ -412,6 +421,11 @@ export default {
                 } else if(!isDebutToday && isFinToday) {
                     //on check si debut dans la range
                     if(!moment(this.dateDebut).isBetween(mostOldRecord, mostRecentRecord, null, '[]')) {
+
+                        mostOldRecord = moment(mostOldRecord, 'YYYY-MM-DD');
+                        mostOldRecord = moment(mostOldRecord).add(1, 'days');
+                        mostOldRecord = this.convertFrenchFormat(mostOldRecord);
+                        mostRecentRecord = this.convertFrenchFormat(mostRecentRecord);
 
                         return this.errorDate = `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
                     }
