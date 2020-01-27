@@ -166,6 +166,9 @@
                 <v-spacer></v-spacer>
 
                 <v-toolbar-items>
+                    <v-btn flat @click="print" class="showDialog">
+                        Export as PDF
+                    </v-btn>
                     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
                         <template v-slot:activator="{ on }">
                             <v-btn flat v-on="on" class="showDialog">
@@ -237,8 +240,12 @@ const DATE_FORMAT = "DD/MM/YYYY";
 import TabData from './TabData';
 import FleetScore from './FleetScore.vue';
 
+
+//TODO DELETE
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+
+const ipc = require('electron').ipcRenderer;
 
 export default {
     name: "EntryPoint",
@@ -507,7 +514,9 @@ export default {
         },
         print() {
 
-            var pdf = new jsPDF();
+            ipc.sendSync('print-pdf', 'reueu');
+
+            /* var pdf = new jsPDF();
             var element = document.getElementById('tabConducteur');
             var width = element.style.width;
             var height = element.style.height;
@@ -515,7 +524,7 @@ export default {
                 var image = canvas.toDataURL('image/png');
                 pdf.addImage(image, 'JPEG', 15, 40, width, height);
                 pdf.save('fes.pdf');
-            });
+            }); */
         }
     },
     computed: {

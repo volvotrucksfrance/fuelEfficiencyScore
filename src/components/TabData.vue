@@ -18,7 +18,7 @@
             :search="search"
             :pagination.sync="pagination"
             :loading="loadingTrucks"
-            :no-data-text="this.$store.state.pourcentage"
+            :no-data-text="this.loadText"
             rows-per-page-text="Lignes par page"
         >
             <template v-slot:items="props">
@@ -66,7 +66,7 @@ export default {
     },
     data() {
         return {
-            loadText: this.$store.state.pourcentage,
+            loadText: "Chargement en cours...",
             search: '',
             headers: [
                 {

@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron';
+const fs = require('fs')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -12,9 +13,10 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    show: false,
+    show: true,
     webPreferences: {
-      devTools: true
+      devTools: true,
+      plugins: true
     },
     width: 1280,
     heigth: 1024 
@@ -35,6 +37,7 @@ const createWindow = () => {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+  
 };
 
 // This method will be called when Electron has finished
@@ -61,3 +64,8 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+ipcMain.on('print-pdf', (event, arg) => {
+
+  mainWindow.webContents.print({silent: false, printBackground:true});
+});
