@@ -495,11 +495,8 @@ export default {
             if(isTruck) {
 
                 const fleetData = myMergeData.getDataFleet();
-                console.log(fleetData);
                 const formatFleet = myMergeData.convertData('fleet', fleetData);
-                console.log(formatFleet);
                 const myScore = new FuelEfficiencyScore(formatFleet, this.$store.state.config);
-                console.log(myScore.getFesScore());
                 
                 this.fleetScore = myScore.getScore();
 

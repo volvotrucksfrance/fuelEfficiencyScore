@@ -26,21 +26,7 @@ export default class MergeData {
         for(var i in listKey) {
 
             const id = listKey[i];
-
-            /* const tmpData = data[id];
-            const dist = tmpData.distance;
-            const time = tmpData.time;
-            const fuel = tmpData.fuel*1000;
-
-            if(dist != NaN && time != NaN) {
-
-                const auto = tmpData.transmissionModeSeconds[0].value;
-                const manual = tmpData.transmissionModeSeconds[1].value;
-                const power = tmpData.transmissionModeSeconds[2].value;
-                const ishiftTotal = auto + manual + power; */
-
-                formatData.push(this.convertData(id, data[id]));
-            /* } */
+            formatData.push(this.convertData(id, data[id]));
         }
 
         return formatData;
