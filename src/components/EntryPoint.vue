@@ -184,12 +184,12 @@
 
             <v-tabs
                 grow
+                id="tabScore"
             >
                 <v-tabs-slider color="black"></v-tabs-slider>
 
                 <v-tab
                     href="#tab-1"
-                    id='tabConducteur'
                 >
                     CONDUCTEUR
                 </v-tab>
@@ -495,8 +495,12 @@ export default {
             if(isTruck) {
 
                 const fleetData = myMergeData.getDataFleet();
+                console.log(fleetData);
                 const formatFleet = myMergeData.convertData('fleet', fleetData);
+                console.log(formatFleet);
                 const myScore = new FuelEfficiencyScore(formatFleet, this.$store.state.config);
+                console.log(myScore.getFesScore());
+                
                 this.fleetScore = myScore.getScore();
 
                 this.$emit('update:fleetScore', this.fleetScore);
@@ -514,17 +518,15 @@ export default {
         },
         print() {
 
-            ipc.sendSync('print-pdf', 'reueu');
-
-            /* var pdf = new jsPDF();
-            var element = document.getElementById('tabConducteur');
+            var element = document.getElementById("tabScore");
             var width = element.style.width;
             var height = element.style.height;
+            var pdf = new jsPDF("l", "mm");
             html2canvas(element).then(canvas => {
                 var image = canvas.toDataURL('image/png');
-                pdf.addImage(image, 'JPEG', 15, 40, width, height);
+                pdf.addImage(image, 'JPEG', 0, 0, width, height);
                 pdf.save('fes.pdf');
-            }); */
+            });
         }
     },
     computed: {

@@ -231,6 +231,35 @@ export default class MergeData {
         return a;
     }
 
+    isAllNotNaN(obj) {
+
+        const keys = Object.keys(obj);
+
+        for(var i in keys) {
+
+            const tmp = obj[keys[i]];
+
+            if(typeof tmp == 'object') {
+
+                const subKeys = Object.keys(tmp);
+
+                for(var j in subKeys) {
+
+                    if(isNaN(tmp[subKeys[j]])) {
+
+                        return true;
+                    }
+                }
+
+            } else if(isNaN(tmp)) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     makeSum(a, b) {
 
         a = this.convertNaNToZero(a);
@@ -240,6 +269,11 @@ export default class MergeData {
     }
 
     addToFleet(a) {
+
+        if(!this.isAllNotNaN(a)) {
+
+            return;
+        }
 
         this.mergedFleet = {
             "fuel": this.makeSum(this.mergedFleet.fuel, a.fuel),
