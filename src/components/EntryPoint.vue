@@ -181,38 +181,42 @@
             </v-toolbar>
 
             <FleetScore class="toolbar_margin" :fleetScore="this.fleetScore"/>
-
-            <v-tabs
-                grow
-                id="tabScore"
-            >
-                <v-tabs-slider color="black"></v-tabs-slider>
-
-                <v-tab
-                    href="#tab-1"
+            <div :style="{'max-width':'1000px', 'margin': '0 auto'}">
+                <v-tabs
+                    grow
+                    id="tabScore"
+                    ref="tabScore"
                 >
-                    CONDUCTEUR
-                </v-tab>
+                    <v-tabs-slider color="black"></v-tabs-slider>
 
-                <v-tab
-                    href="#tab-2"
-                >
-                    CAMION
-                </v-tab>
+                    <v-tab
+                        href="#tab-1"
+                    >
+                        CONDUCTEUR
+                    </v-tab>
 
-                <v-tab-item
-                    value="tab-1"
-                >
-                    <TabData name="Nom" :tabData="this.driverScore"/>
-                </v-tab-item>
+                    <v-tab
+                        href="#tab-2"
+                    >
+                        CAMION
+                    </v-tab>
 
-                <v-tab-item
-                    value="tab-2"
-                >
-                    <TabData name="VIN" :tabData="this.trucksScore"/>
-                </v-tab-item>
+                    <v-tab-item
+                        value="tab-1"
+                    >
+                        <div>
+                            <TabData name="Nom" :tabData="this.driverScore"/>
+                        </div>
+                    </v-tab-item>
 
-            </v-tabs>
+                    <v-tab-item
+                        value="tab-2"
+                    >
+                        <TabData name="VIN" :tabData="this.trucksScore"/>
+                    </v-tab-item>
+
+                </v-tabs>
+            </div>
         </div>
         </transition>
         <!-- END SHOW SCORE -->
@@ -515,15 +519,47 @@ export default {
         },
         print() {
 
-            var element = document.body;
+            var element = document.getElementById('tabScore');
             var width = element.width;
             var height = element.height;
-            var pdf = new jsPDF("l", "mm");
+
+            console.log(width, height);
+
+            /* var pdf = new jsPDF();
             html2canvas(element).then(canvas => {
                 var image = canvas.toDataURL('image/png');
-                pdf.addImage(image, 'JPEG', 0, 0, width, height);
+                pdf.addImage(image, 'JPEG', 13, 0, width, height);
+                pdf.save('fes.pdf');
+            }); */
+            var pdf = new jsPDF({
+                            orientation: 'p',
+                            unit: 'px',
+                            format: [800, this.$refs.tabScore.$el.clientHeight]
+                        });
+
+            html2canvas(element).then(canvas => {
+                var image = canvas.toDataURL('image/png');
+                pdf.addImage(image, 'JPEG', 12, 0, width, height);
                 pdf.save('fes.pdf');
             });
+
+            /* var element = document.getElementById('tabScore');
+            var width = this.$refs.tabScore.$el.clientWidth;
+            var height = this.$refs.tabScore.$el.clientHeight;
+
+            console.log(this.$refs.tabScore);
+
+            var pdf = new jsPDF({
+                            orientation: 'p',
+                            unit: 'px',
+                            format: [width, height]
+                        });
+
+            html2canvas(element).then(canvas => {
+                var image = canvas.toDataURL('image/png');
+                pdf.addImage(image, 'JPEG', 12, 0, width, height);
+                pdf.save('fes.pdf');
+            }); */
         }
     },
     computed: {

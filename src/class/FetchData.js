@@ -310,7 +310,7 @@ export default class  {
     }
 
 
-    async getVehiclesData(dateDebut, dateFin, store, vue) {
+    async getVehiclesData(dateDebut, dateFin, store) {
 
         const realStart = dateDebut;
         const realEnd = dateFin;

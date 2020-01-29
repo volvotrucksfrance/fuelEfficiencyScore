@@ -23,12 +23,36 @@
         >
             <template v-slot:items="props">
                 <tr @click="showScoreDetail(props.item)" >
-                    <td>{{ props.item.name }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.score)}">{{ props.item.score }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.anticipation)}">{{ props.item.anticipation }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.engine)}">{{ props.item.engine }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.speed)}">{{ props.item.speed }}</td>
-                    <td class="text-xs-right title" :style="{'color': getColor(props.item.idle)}">{{ props.item.idle }}</td>
+                    <td>
+                        <v-layout justify-center>
+                            {{props.item.name}}
+                        </v-layout>
+                    </td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.score)}">
+                        <v-layout justify-center>
+                            {{props.item.score}}
+                        </v-layout>
+                    </td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.anticipation)}">
+                        <v-layout justify-center>
+                            {{props.item.anticipation}}
+                        </v-layout>
+                    </td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.engine)}">
+                        <v-layout justify-center>
+                            {{props.item.engine}}
+                        </v-layout>
+                    </td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.speed)}">
+                        <v-layout justify-center>
+                            {{props.item.speed}}
+                        </v-layout>
+                    </td>
+                    <td class="text-xs-right title" :style="{'color': getColor(props.item.idle)}">
+                        <v-layout justify-center>
+                            {{props.item.idle}}
+                        </v-layout>
+                    </td>
                 </tr>
             </template>
 
