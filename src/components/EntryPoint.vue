@@ -515,9 +515,9 @@ export default {
         },
         print() {
 
-            var element = document.getElementById("tabScore");
-            var width = element.style.width;
-            var height = element.style.height;
+            var element = document.body;
+            var width = element.width;
+            var height = element.height;
             var pdf = new jsPDF("l", "mm");
             html2canvas(element).then(canvas => {
                 var image = canvas.toDataURL('image/png');

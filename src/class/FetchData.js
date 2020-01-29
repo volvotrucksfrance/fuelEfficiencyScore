@@ -1,4 +1,5 @@
 import moment from 'moment';
+import MergeVehicleStatuses from '../class/MergeVehicleStatuses';
 
 var rp = require('request-promise');
 
@@ -136,12 +137,31 @@ export default class  {
 
                 for(var i = 0; i < allData.old.length - 1; i++) {
 
-                    brutData.debut[allData.old[i][groupby]] = allData.old[i];
+                    if(brutData.debut[allData.old[i][groupby]] != undefined) {
+
+
+                        const myMerge = new MergeVehicleStatuses(brutData.debut[allData.old[i][groupby]], allData.old[i]);
+                        myMerge.makeSum();
+                        brutData.debut[allData.old[i][groupby]] = myMerge.getSummedStatuses();
+
+                    } else {
+
+                        brutData.debut[allData.old[i][groupby]] = allData.old[i];
+                    }
                 }
 
                 for(var i in allData.recent) {
 
-                    brutData.fin[allData.recent[i][groupby]] = allData.recent[i];
+                    if(brutData.fin[allData.recent[i][groupby]] != undefined) {
+
+                        const myMerge = new MergeVehicleStatuses(brutData.fin[allData.recent[i][groupby]], allData.recent[i]);
+                        myMerge.makeSum();
+                        brutData.fin[allData.recent[i][groupby]] = myMerge.getSummedStatuses();
+
+                    } else {
+
+                        brutData.fin[allData.recent[i][groupby]] = allData.recent[i];
+                    }
                 }
 
                 return brutData;
@@ -167,7 +187,8 @@ export default class  {
                         "Content-Type": 'application/json'
                     },
                     qs: {
-                        starttime: dateDebut.toISOString()
+                        starttime: dateDebut.toISOString(),
+                        groupby: groupby
                     }
                 });
 
@@ -175,22 +196,51 @@ export default class  {
 
                 for(var i = 0; i < debutData.length - 1; i++) {
 
-                    brutData.debut[debutData[i].vin] = debutData[i];
+                    if(brutData.debut[debutData[i][groupby]] != undefined) {
+
+                        const myMerge = new MergeVehicleStatuses(brutData.debut[debutData[i][groupby]], debutData[i]);
+                        myMerge.makeSum();
+                        brutData.debut[debutData[i][groupby]] = myMerge.getSummedStatuses();
+
+                    } else {
+
+                        brutData.debut[debutData[i][groupby]] = debutData[i];
+                    }
                 }
-
-
+        
                 const lastData = await this.getVehiclesDataLatest();
                 for(var i = 0; i < lastData.length - 1; i++) {
 
-                    if(brutData.debut[lastData[i].vin] != undefined) {
+                    if(groupby == 'driverID' && lastData[i].driver1Id != undefined) {
 
-                        brutData.fin[lastData[i].vin] = lastData[i];
+                        //si ca existe au debut alors on ajoute la fin
+                        if(brutData.debut[this._getDriverID(lastData[i].driver1Id)] != undefined) {
+
+                            //Si la données existe on additione
+                            if(brutData.fin[this._getDriverID(lastData[i].driver1Id)] != undefined) {
+
+                                const myMerge = new MergeVehicleStatuses(brutData.fin[this._getDriverID(lastData[i].driver1Id)], lastData[i]);
+                                myMerge.makeSum();
+                                brutData.fin[this._getDriverID(lastData[i].driver1Id)] = myMerge.getSummedStatuses();
+        
+                            } else {
+        
+                                brutData.fin[this._getDriverID(lastData[i].driver1Id)] = lastData[i];
+                            }
+                        }
+
+                    } else {
+
+                        if(brutData.debut[lastData[i][groupby]] != undefined) {
+
+                            brutData.fin[lastData[i][groupby]] = lastData[i];
+                        }
                     }
                 }
-
                 return brutData;
             } catch(err) {
 
+                console.log(err);
                 return false;
             }
 
@@ -202,10 +252,19 @@ export default class  {
 
     }
 
+    _getDriverID(driverData) {
+
+        return driverData != undefined ? 
+                (driverData.tachoDriverIdentification != undefined ? driverData.tachoDriverIdentification.cardIssuingMemberState
+                    + driverData.tachoDriverIdentification.driverIdentification : null)
+            : null;
+    }
+
     async getVehiclesDataLatest() {
 
         try {
 
+            await this.sleep(10000);
             var listData = [];
 
             const endUrl = 'vehiclestatuses';
@@ -246,6 +305,7 @@ export default class  {
             
         } catch(err) {
 
+            console.log('err API', err);
         }
     }
 
