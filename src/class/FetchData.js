@@ -247,7 +247,7 @@ export default class  {
         //on recup tout sur Volvo Connect
         } else {
 
-            return await this.getVehiclesData(dateDebut, dateFin, store);
+            return await this.getVehiclesData(dateDebut, dateFin, store, groupby);
         }
 
     }
@@ -310,7 +310,7 @@ export default class  {
     }
 
 
-    async getVehiclesData(dateDebut, dateFin, store) {
+    async getVehiclesData(dateDebut, dateFin, store, groupby) {
 
         const realStart = dateDebut;
         const realEnd = dateFin;
@@ -394,15 +394,21 @@ export default class  {
 
                     for(var k in tabData) { 
 
-                        //trucks data 
-                        if(brutData.debut[tabData[k].vin] == undefined) {
+                        if(groupby == 'vin') {
 
-                            brutData.debut[tabData[k].vin] = tabData[k];
-                        } else {
-    
-                            brutData.fin[tabData[k].vin] = tabData[k];
+                            //trucks data 
+                            if(brutData.debut[tabData[k].vin] == undefined) {
+
+                                brutData.debut[tabData[k].vin] = tabData[k];
+                            } else {
+        
+                                brutData.fin[tabData[k].vin] = tabData[k];
+                            }
+                        } else if(groupyby == 'driverID') {
+                            //this._getDriverID(lastData[i].driver1Id)]
+
                         }
-                        
+
                     }
 
                     await this.sleep(10000);

@@ -105,6 +105,6 @@ export default {
 <style scoped>
 .space_text {
 
-    margin-bottom: 15px;
+    margin-top: 15px;
 }
 </style>

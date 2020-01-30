@@ -127,23 +127,20 @@
             <v-container>
                 <v-layout row wrap align-center>
                     <v-flex class="text-xs-center">
-                        <p class="red--text">{{this.errorDate}}</p>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-
-            <v-container>
-                <v-layout row wrap align-center>
-                    <v-flex class="text-xs-center">
-                        <v-btn 
-                            color="success"
-                            @click="getScore"
-                            outline
-                            large
-                            fab
-                        >
-                            GO
-                        </v-btn>
+                        <v-row>
+                            <p class="red--text">{{this.errorDate}}</p>
+                        </v-row>
+                        <v-row>
+                            <v-btn 
+                                color="success"
+                                @click="getScore"
+                                outline
+                                large
+                                fab
+                            >
+                                GO
+                            </v-btn>
+                        </v-row>
                     </v-flex>
                 </v-layout>
             </v-container>
@@ -167,7 +164,7 @@
 
                 <v-toolbar-items>
                     <v-btn flat @click="print" class="showDialog">
-                        Export as PDF
+                        Exporter en PDF
                     </v-btn>
                     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
                         <template v-slot:activator="{ on }">
@@ -181,6 +178,7 @@
             </v-toolbar>
 
             <FleetScore class="toolbar_margin" :fleetScore="this.fleetScore"/>
+
             <div :style="{'max-width':'1000px', 'margin': '0 auto'}">
                 <v-tabs
                     grow
@@ -220,8 +218,6 @@
         </div>
         </transition>
         <!-- END SHOW SCORE -->
-
-
     </div>
     </v-app>
 </template>
@@ -519,47 +515,64 @@ export default {
         },
         print() {
 
-            var element = document.getElementById('tabScore');
-            var width = element.width;
-            var height = element.height;
+            window.setTimeout(() => {
 
-            console.log(width, height);
+                var element = document.getElementById('tabScore');
+                var width = element.width;
+                var height = element.height;
 
-            /* var pdf = new jsPDF();
-            html2canvas(element).then(canvas => {
-                var image = canvas.toDataURL('image/png');
-                pdf.addImage(image, 'JPEG', 13, 0, width, height);
-                pdf.save('fes.pdf');
-            }); */
-            var pdf = new jsPDF({
-                            orientation: 'p',
-                            unit: 'px',
-                            format: [800, this.$refs.tabScore.$el.clientHeight]
-                        });
+                const A4height = 1600;// A4 height
+                const A4width = 1000;// A4 height
 
-            html2canvas(element).then(canvas => {
-                var image = canvas.toDataURL('image/png');
-                pdf.addImage(image, 'JPEG', 12, 0, width, height);
-                pdf.save('fes.pdf');
-            });
+                var pdf = new jsPDF({
+                                orientation: 'p',
+                                unit: 'px',
+                                format: [A4width, A4height/* this.$refs.tabScore.$el.clientHeight */]
+                            });
 
-            /* var element = document.getElementById('tabScore');
-            var width = this.$refs.tabScore.$el.clientWidth;
-            var height = this.$refs.tabScore.$el.clientHeight;
+                html2canvas(element).then(canvas => {
 
-            console.log(this.$refs.tabScore);
+                        for (var i = 0; i <= this.$refs.tabScore.$el.clientHeight/A4height; i++) {
+                            //! This is all just html2canvas stuff
+                            var srcImg  = canvas;
+                            var sX      = 0;
+                            var sY      = A4height*i; // start A4height pixels down for every new page
+                            var sWidth  = A4width;
+                            var sHeight = A4height;
+                            var dX      = 0;
+                            var dY      = 0;
+                            var dWidth  = A4width;
+                            var dHeight = A4height;
 
-            var pdf = new jsPDF({
-                            orientation: 'p',
-                            unit: 'px',
-                            format: [width, height]
-                        });
+                            window.onePageCanvas = document.createElement("canvas");
+                            onePageCanvas.setAttribute('width', A4width);
+                            onePageCanvas.setAttribute('height', A4height);
+                            var ctx = onePageCanvas.getContext('2d');
+                            // details on this usage of this function: 
+                            // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
+                            ctx.drawImage(srcImg,sX,sY,sWidth,sHeight,dX,dY,dWidth,dHeight);
 
-            html2canvas(element).then(canvas => {
-                var image = canvas.toDataURL('image/png');
-                pdf.addImage(image, 'JPEG', 12, 0, width, height);
-                pdf.save('fes.pdf');
-            }); */
+                            // document.body.appendChild(canvas);
+                            var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+
+                            var width         = onePageCanvas.width;
+                            var height        = onePageCanvas.clientHeight;
+
+                            //! If we're on anything other than the first page,
+                            // add another page
+                            if (i > 0) {
+                                pdf.addPage(A4width, A4height); //8.5" x 11" in pts (in*72)
+                            }
+                            //! now we declare that we're working on that page
+                            pdf.setPage(i+1);
+                            //! now we add content to that page!
+                            pdf.addImage(canvasDataURL, 'PNG', 0, 0, (width*.72), (height*.71));
+
+                        }
+
+                    pdf.save('fes.pdf');
+                });
+            }, 350);
         }
     },
     computed: {
@@ -620,6 +633,7 @@ export default {
     margin: auto;
     width: 50%;
     max-width: 600px;
+    margin-top: 200px;
 }
 .top_margin {
 
@@ -627,6 +641,6 @@ export default {
 }
 .toolbar_margin {
 
-    margin-top: 65px;
+    padding-top: 65px;
 }
 </style>
