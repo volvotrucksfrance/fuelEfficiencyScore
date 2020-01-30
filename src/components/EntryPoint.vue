@@ -163,7 +163,7 @@
                 <v-spacer></v-spacer>
 
                 <v-toolbar-items>
-                    <v-btn flat @click="print" class="showDialog">
+                    <v-btn flat @click="print" class="showDialog" v-if="isLoaded">
                         Exporter en PDF
                     </v-btn>
                     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -258,6 +258,7 @@ export default {
     data() {
 
         return {
+            isLoaded: false,
             errorLogin: '',
             msgDate: '',
             userData: null,
@@ -459,6 +460,7 @@ export default {
 
                 this.$emit('update:tabData', this.driverScore);
                 this.$emit('update:tabData', this.trucksScore);
+                this.isLoaded = true;
             }
         },
 
@@ -512,6 +514,7 @@ export default {
             window.scrollTo(0, 0);
             this.showScores = false;
             this.showDate = true;
+            this.isLoaded = false;
         },
         print() {
 
@@ -570,7 +573,9 @@ export default {
 
                         }
 
-                    pdf.save('fes.pdf');
+                    pdf.save(
+                        `fes_${this.convertFrenchFormat(this.$store.state.startTime)}_${this.convertFrenchFormat(this.$store.state.stopTime)}`
+                    );
                 });
             }, 350);
         }
