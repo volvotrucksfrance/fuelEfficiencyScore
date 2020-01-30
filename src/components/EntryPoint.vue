@@ -530,7 +530,7 @@ export default {
                 var pdf = new jsPDF({
                                 orientation: 'p',
                                 unit: 'px',
-                                format: [A4width, A4height/* this.$refs.tabScore.$el.clientHeight */]
+                                format: [A4width, A4height]
                             });
 
                 html2canvas(element).then(canvas => {
