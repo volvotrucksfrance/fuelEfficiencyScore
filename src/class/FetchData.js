@@ -361,7 +361,6 @@ export default class  {
 
                     const perc = this.dateToPourcentage(realStart, tmpStartTime, realEnd);
 
-                    console.log(groupeby, perc);
                     store.commit('setPourcentage', `${perc}%`);
                     var tabData = await rp({
                         method: 'GET',
@@ -470,7 +469,6 @@ export default class  {
                         }
                     }
                 }
-                console.log(brutData);
 
             }
 
