@@ -22,7 +22,19 @@ export default class MergeVehicleStatuses {
 
             const unit = LIST_UNITS[i];
 
-            if(a[unit] != undefined && b[unit] != undefined) {
+            if(a == undefined && b == undefined) {
+
+                res[unit] = 0;
+
+            } else if(a == undefined) {
+
+                res[unit] = b[unit];
+
+            } else if(b == undefined) {
+
+                res[unit] = a[unit];
+
+            } else if(a[unit] != undefined && b[unit] != undefined) {
 
                 res[unit] = this._add(a[unit], b[unit]);
 
@@ -45,6 +57,57 @@ export default class MergeVehicleStatuses {
             return 0;
         }
         return a;
+    }
+
+    _addValue(a, b, i) {
+
+        if(a == undefined && b == undefined) {
+
+            return 0;
+        } else if(a == undefined) {
+
+            return 0;
+        } else if(b == undefined) {
+
+            return 0;
+        } else if(a[i] == undefined && b[i] == undefined) {
+
+            return 0;
+        }  else 
+        
+        if(a[i] == undefined) {
+
+            a = {
+                value: 0
+            };
+        } else {
+            
+            a = a[i];
+        }
+
+        if(b[i] == undefined) {
+
+            b = {
+                value: 0
+            };
+        } else {
+            
+            b = b[i];
+        }
+
+        if(a.value != undefined && b.value != undefined) {
+
+            return this._add(a.value, b.value);
+        } else if(a.value != undefined) {
+
+            return this._NaNToZero(a.value);
+        } else if(b.value != undefined) {
+
+            return this._NaNToZero(b.value);
+        } else {
+
+            return 0;
+        }
     }
 
     _add(a, b) {
@@ -89,15 +152,15 @@ export default class MergeVehicleStatuses {
                     "transmissionModeSeconds": [
                         {
                             "label": "AUTO",
-                            "value": this._add(this._a.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds[0].value, this._b.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds[0].value)
+                            "value": this._addValue(this._a.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds, this._b.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds, 0)
                         },
                         {
                             "label": "MANUAL",
-                            "value": this._add(this._a.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds[1].value, this._b.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds[1].value)
+                            "value": this._addValue(this._a.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds, this._b.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds, 1)
                         },
                         {
                             "label": "POWER",
-                            "value": this._add(this._a.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds[2].value, this._b.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds[2].value)
+                            "value": this._addValue(this._a.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds, this._b.accumulatedData.volvoGroupAccumulated.transmissionModeSeconds, 2)
                         }
                     ],
                     "roadOverspeed": this._makeSumObj(this._a.accumulatedData.volvoGroupAccumulated.engineOverload, this._b.accumulatedData.volvoGroupAccumulated.engineOverload),

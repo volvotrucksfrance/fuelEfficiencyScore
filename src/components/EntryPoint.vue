@@ -158,7 +158,7 @@
                 <v-icon>arrow_back</v-icon>
                 </v-btn>
 
-                <v-toolbar-title>Score fuel efficiency {{this.convertFrenchFormat(this.$store.state.startTime)}} - {{this.convertFrenchFormat(this.$store.state.stopTime)}}</v-toolbar-title>
+                <v-toolbar-title>Score d'éfficacité énergétique {{this.convertFrenchFormat(this.$store.state.startTime)}} - {{this.convertFrenchFormat(this.$store.state.stopTime)}}</v-toolbar-title>
 
                 <v-spacer></v-spacer>
 

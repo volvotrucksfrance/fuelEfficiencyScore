@@ -310,7 +310,7 @@ export default class  {
     }
 
 
-    async getVehiclesData(dateDebut, dateFin, store, groupby) {
+    async getVehiclesData(dateDebut, dateFin, store, groupeby) {
 
         const realStart = dateDebut;
         const realEnd = dateFin;
@@ -347,6 +347,8 @@ export default class  {
                 }
             };
 
+            var tabDriverBrut = {};
+
             for(var i in listDate) {
 
 
@@ -359,6 +361,7 @@ export default class  {
 
                     const perc = this.dateToPourcentage(realStart, tmpStartTime, realEnd);
 
+                    console.log(groupeby, perc);
                     store.commit('setPourcentage', `${perc}%`);
                     var tabData = await rp({
                         method: 'GET',
@@ -394,7 +397,7 @@ export default class  {
 
                     for(var k in tabData) { 
 
-                        if(groupby == 'vin') {
+                        if(groupeby == 'vin') {
 
                             //trucks data 
                             if(brutData.debut[tabData[k].vin] == undefined) {
@@ -404,11 +407,20 @@ export default class  {
         
                                 brutData.fin[tabData[k].vin] = tabData[k];
                             }
-                        } else if(groupyby == 'driverID') {
-                            //this._getDriverID(lastData[i].driver1Id)]
+                        } else if(groupeby == 'driverID') {
+                            const tmpDriverID = this._getDriverID(tabData[k].driver1Id);
 
+                            if(tmpDriverID != null) {
+        
+                                if(tabDriverBrut[tmpDriverID] == undefined) {
+
+                                    tabDriverBrut[tmpDriverID] = [tabData[k]];
+                                } else {
+    
+                                    tabDriverBrut[tmpDriverID].push(tabData[k]);
+                                }
+                            }
                         }
-
                     }
 
                     await this.sleep(10000);
@@ -416,10 +428,57 @@ export default class  {
                 } while(shouldFetchMore);
             }
 
+            //if is driverID sort 
+            if(groupeby == 'driverID') {
+
+                const listDrivers = Object.keys(tabDriverBrut);
+
+                for(var k in listDrivers) {
+
+                    const myTmpDriverID = listDrivers[k];
+
+                    for(var i = 0; i < tabDriverBrut[myTmpDriverID].length - 1; i++) {
+
+                        const status = tabDriverBrut[myTmpDriverID][i];
+                        const currentVin = status.vin;
+
+                        //skip until last statuses
+                        while(tabDriverBrut[myTmpDriverID][i+1].vin == currentVin && i < tabDriverBrut[myTmpDriverID].length - 2) {
+
+                            i++;
+                        }
+
+                        //si 2 données sur 1 meme camions
+                        if(status.vin == tabDriverBrut[myTmpDriverID][i].vin) {
+
+                            if(brutData.debut[myTmpDriverID] != undefined) {
+
+                                const myMerge = new MergeVehicleStatuses(brutData.debut[myTmpDriverID], tabDriverBrut[myTmpDriverID][i]);
+                                myMerge.makeSum();
+                                brutData.debut[myTmpDriverID] = myMerge.getSummedStatuses();
+
+                                const myMergeFin = new MergeVehicleStatuses(brutData.fin[myTmpDriverID], tabDriverBrut[myTmpDriverID][i]);
+                                myMergeFin.makeSum();
+                                brutData.fin[myTmpDriverID] = myMergeFin.getSummedStatuses();
+        
+                            } else {
+        
+                                brutData.debut[myTmpDriverID] = status;
+                                brutData.fin[myTmpDriverID] = tabDriverBrut[myTmpDriverID][i];
+                            }
+                            i++;
+                        }
+                    }
+                }
+                console.log(brutData);
+
+            }
+
             return brutData;
 
         } catch (err) {
 
+            console.log(err);
             store.commit('setPourcentage', 'Une erreur est survenue !');
             return err;
         }
