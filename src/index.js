@@ -14,7 +14,7 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     show: true,
     webPreferences: {
-      devTools: false
+      devTools: true
     },
     width: 1280,
     heigth: 1024 
