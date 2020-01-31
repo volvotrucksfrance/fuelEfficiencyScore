@@ -15,7 +15,7 @@ export default class  {
         this.login = login;
         this.password = password;
         this.apiUrl = "https://api.volvotrucks.com/";
-        this.gaidoUrl = "http://vtf.spv.gaido.fr/";
+        this.gaidoUrl = "https://vtf.spv.gaido.fr/";
 
         this.vehicleData = {};
         this.isVehicleDone = false;
@@ -87,6 +87,7 @@ export default class  {
 
             } while(shouldFetchMore);
 
+            console.log(res);
             return res;
             
         } catch (err) {

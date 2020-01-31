@@ -96,7 +96,7 @@
                             <template v-slot:activator="{ on }">
                                 <v-text-field
                                     :value="computedDateFormattedMomentjs(dateDebut)"
-                                    label="Date de debut"
+                                    label="Date de début"
                                     readonly
                                     v-on="on"
                                 ></v-text-field>
@@ -409,11 +409,11 @@ export default {
 
             if(this.dateDebut > this.dateFin) {
 
-                return this.errorDate = 'La date de debut doit etre antérieur à la date de fin';
+                return this.errorDate = 'La date de début doit etre antérieur à la date de fin';
 
             } else if(this.dateDebut == null || this.dateFin == null) {
 
-                return this.errorDate = 'Veuillez selectionner une date de debut et de fin';
+                return this.errorDate = 'Veuillez selectionner une date de début et de fin';
 
             } else {
                 
@@ -432,7 +432,7 @@ export default {
                         mostRecentRecord = this.convertFrenchFormat(mostRecentRecord);
                         
 
-                        return this.errorDate = `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
+                        return this.errorDate = `L'intervalle de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
 
                     }
                     
@@ -445,7 +445,7 @@ export default {
                         mostOldRecord = this.convertFrenchFormat(mostOldRecord);
                         mostRecentRecord = this.convertFrenchFormat(mostRecentRecord);
 
-                        return this.errorDate = `L'interval de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
+                        return this.errorDate = `L'intervalle de date doit etre compris entre le ${mostOldRecord} et le ${mostRecentRecord}`;
                     }
 
                 }
