@@ -5,7 +5,7 @@
     >
         <!-- scoreDetail{{this.$store.state.scoreDetail.auto}} -->
         <v-card-title class="headline justify-center">
-                Score d'efficacité énergétique
+                Score d'éfficacité énergétique
                 <span class="display-3" :style="{'margin-top': '10px',padding: '0 7px 0 7px', 'color': 'white', 'background-color': getColor(this.$store.state.scoreDetail.score)}">  {{this.$store.state.scoreDetail.score}}  </span>
         </v-card-title>
 
@@ -150,5 +150,6 @@ export default {
 .brutDataDisplay {
 
     float: right;
+    display: none;
 }
 </style>

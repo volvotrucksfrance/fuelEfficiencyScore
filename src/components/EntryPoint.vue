@@ -64,6 +64,16 @@
                 <v-toolbar-title></v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
+                <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+                    <template v-slot:activator="{ on }">
+                        <v-btn flat v-on="on" class="showDialog">
+                            Paramètre
+                        </v-btn>
+                    </template>
+                    <Settings/>
+                </v-dialog>
+                </v-toolbar-items>
+                <v-toolbar-items>
                     <v-btn flat v-on="on" class="showDialog" @click="logout">
                         Se déconnecter
                     </v-btn>
@@ -340,7 +350,7 @@ export default {
                 this.dataFetcher = new FetchData(this.login, this.password);
                 let tmpDrivers = await this.dataFetcher.loginToGaido();
 
-                this.msgDate = `Données disponible entre le ${new Date(tmpDrivers.oldRecord).toLocaleDateString('fr-FR')} et le ${new Date().toLocaleDateString('fr-FR')}`;
+                this.msgDate = `Données disponibles entre le ${new Date(tmpDrivers.oldRecord).toLocaleDateString('fr-FR')} et le ${new Date().toLocaleDateString('fr-FR')}`;
                 this.userData = tmpDrivers;
                 return tmpDrivers;
             } catch(err) {

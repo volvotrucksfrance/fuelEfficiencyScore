@@ -16,6 +16,12 @@ export default class  {
         this.password = password;
         this.apiUrl = "https://api.volvotrucks.com/";
         this.gaidoUrl = "http://vtf.spv.gaido.fr/";
+
+        this.vehicleData = {};
+        this.isVehicleDone = false;
+
+        this.driverData = {};
+        this.isDriverDone = false;
     }
 
     async loginToGaido() {
