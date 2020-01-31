@@ -443,6 +443,14 @@ export default class  {
             }
 
             const listDrivers = Object.keys(tabDriverBrut);
+            brutData = {
+                debut : {
+    
+                },
+                fin: {
+    
+                }
+            };
 
             for(var k in listDrivers) {
 
@@ -486,7 +494,13 @@ export default class  {
 
             }
 
-            return brutData;
+            if(groupeby == 'driverID') {
+
+                return this.driverData;
+            } else {
+
+                return this.vehicleData;  
+            }
 
         } catch (err) {
 
