@@ -7,7 +7,7 @@
             <v-toolbar-title>Paramètre</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-                <v-btn dark flat @click="setDefault">Defaut</v-btn>
+                <v-btn dark flat @click="setDefault">Paramètres par défaut</v-btn>
                 <v-btn dark flat @click="saveConfig">Enregistrer</v-btn>
             </v-toolbar-items>
         </v-toolbar>

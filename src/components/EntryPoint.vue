@@ -391,11 +391,11 @@ export default {
 
                 if(this.driverData[i].tachoDriverIdentification.cardIssuingMemberState + this.driverData[i].tachoDriverIdentification.driverIdentification == id) {
 
-                    return this.driverData[i].firstName + this.driverData[i].lastName;
+                    return this.driverData[i].firstName + ' ' + this.driverData[i].lastName;
                 }
             }
 
-            return id;
+            return id.substring(1);
         },
 
         computedDateFormattedMomentjs(tmpDate) {
